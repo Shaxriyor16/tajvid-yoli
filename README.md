@@ -197,7 +197,7 @@ python deploy/release.py 1.0.3 --notes-uz "Yangi dizayn va xatolar tuzatildi"
 
 Ilova ochilganda saytdagi `version.json` ni tekshiradi va yangi versiya bo'lsa yuklab olishni taklif qiladi
 (`--min-build N` bersangiz, eski versiyalar majburan yangilanadi). Saytdagi yuklab olish tugmasi ham avtomatik yangilanadi.
-Imkoniyatlar: `--arm64` (tezroq), `--skip-tests`, `--no-deploy`, `--no-git`, `--dry-run`.
+Standart: bitta universal APK (hamma qurilmalarga mos). Imkoniyatlar: `--split` (arm64 ~38 MB va armv7 ~34 MB alohida), `--skip-tests`, `--no-deploy`, `--no-git`, `--dry-run`.
 
 ## 🗂 Tuzilma
 

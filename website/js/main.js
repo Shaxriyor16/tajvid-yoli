@@ -320,35 +320,63 @@
   }
 })();
 
-/* APK yuklab olish: /version.json (release skripti yozadi) mavjud bo'lsa yuklab olish tugmasi
-   versiya va hajm bilan ko'rinadi, "Chiqqanda xabar bering" esa yashirinadi. Fayl bo'lmasa, aksincha. */
+/* APK yuklab olish: /version.json (release skripti yozadi) mavjud bo'lsa yuklab olish tugmasi ko'rinadi.
+   Telefon 64-bit bo'lsa arm64, 32-bit bo'lsa armeabi-v7a APK beriladi (har biri ~35-40 MB). Fayl bo'lmasa, tugma yo'q. */
 (function () {
   var apk = document.getElementById("apk-btn");
   var soon = document.querySelector('[data-open="notify"]');
   var note = document.getElementById("soon-note");
   if (!apk || !window.fetch) return;
-  fetch("/version.json", { cache: "no-store" })
-    .then(function (r) {
-      return r.ok ? r.json() : null;
-    })
-    .then(function (v) {
-      if (!v || typeof v.url !== "string" || !/^\/downloads\/[\w.-]+\.apk$/.test(new URL(v.url, location.href).pathname)) return;
-      apk.setAttribute("href", new URL(v.url, location.href).pathname);
+
+  function safe(u) {
+    try {
+      var p = new URL(u, location.href);
+      // Faqat /downloads/*.apk yo'li olinadi va shu saytning o'z domenida ishlatiladi (tashqi havola yo'q).
+      return /^\/downloads\/[\w.-]+\.apk$/.test(p.pathname) ? p.pathname : null;
+    } catch (e) {
+      return null;
+    }
+  }
+  function mb(n) {
+    return n ? " \u00b7 " + Math.round(n / 1048576) + " MB" : "";
+  }
+  // Brauzer bitness'ni bersa (Chrome/Android) shuni ishlatamiz, aks holda 64-bit deb olamiz.
+  function bitness() {
+    var uad = navigator.userAgentData;
+    if (!uad || !uad.getHighEntropyValues) return Promise.resolve("64");
+    return uad.getHighEntropyValues(["bitness"]).then(function (r) { return r.bitness || "64"; }, function () { return "64"; });
+  }
+
+  Promise.all([fetch("/version.json", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }), bitness()])
+    .then(function (res) {
+      var v = res[0], bits = res[1];
+      if (!v) return;
+      var apks = v.apks || {};
+      var a64 = apks["arm64-v8a"] || { url: v.url, sizeBytes: v.sizeBytes };
+      var a32 = apks["armeabi-v7a"] || null;
+      var pick = bits === "32" && a32 ? a32 : a64;
+      var other = pick === a64 ? a32 : a64;
+      var href = safe(pick.url);
+      if (!href) return;
+      apk.setAttribute("href", href);
       apk.hidden = false;
       if (soon) soon.hidden = true;
-      var label = "v" + String(v.version || "").replace(/[^\d.]/g, "");
-      if (v.sizeBytes) label += " · " + Math.round(v.sizeBytes / 1048576) + " MB";
       var small = document.createElement("small");
-      small.textContent = label;
+      small.textContent = "v" + String(v.version || "").replace(/[^\d.]/g, "") + mb(pick.sizeBytes);
       small.style.cssText = "opacity:.7;font-weight:600;margin-left:6px";
       apk.appendChild(small);
       if (note) {
+        var otherHref = other && safe(other.url);
+        var otherLabel = pick === a64 ? ["32-bit (eski) telefon uchun", "For older 32-bit phones"] : ["64-bit telefon uchun", "For 64-bit phones"];
         note.innerHTML =
           '<ul class="apk-meta">' +
           '<li><span lang="uz">Android 5.0 va undan yuqori</span><span lang="en">Android 5.0 or newer</span></li>' +
           '<li><span lang="uz">Bepul</span><span lang="en">Free</span></li>' +
-          '<li><span lang="uz">Ilova o‘zi yangilanadi: yangi versiya chiqsa, taklif ko‘rsatadi</span><span lang="en">The app tells you when a new version is out</span></li>' +
-          '<li><span lang="uz">O‘rnatishda “Nomaʼlum manbalar” ruxsatini bering</span><span lang="en">Allow “Install unknown apps” when asked</span></li>' +
+          '<li><span lang="uz">Ilova o\u2018zi yangilanadi: yangi versiya chiqsa, taklif ko\u2018rsatadi</span><span lang="en">The app tells you when a new version is out</span></li>' +
+          '<li><span lang="uz">O\u2018rnatishda \u201cNomaʼlum manbalar\u201d ruxsatini bering</span><span lang="en">Allow \u201cInstall unknown apps\u201d when asked</span></li>' +
+          (otherHref
+            ? '<li><a href="' + otherHref + '" download><span lang="uz">' + otherLabel[0] + '</span><span lang="en">' + otherLabel[1] + "</span>" + mb(other.sizeBytes) + "</a></li>"
+            : "") +
           "</ul>";
       }
     })

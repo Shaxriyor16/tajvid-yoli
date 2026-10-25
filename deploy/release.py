@@ -6,8 +6,8 @@
 Nima qiladi (tartib bilan):
   1. pubspec.yaml da versiyani oshiradi (1.0.2+3 -> 1.0.3+4)
   2. flutter analyze + flutter test            (--skip-tests bilan o'tkazib yuboriladi)
-  3. Release APK yig'adi (hamma qurilmalarga mos universal; --arm64 tezroq va kichikroq)
-  4. APK ni website/downloads/tajvid-yoli.apk ga qo'yadi, website/version.json ni yozadi (sha256, hajm, izohlar)
+  3. Bitta universal APK yig'adi (hamma qurilmalarga mos). --split bilan: arm64 (~38 MB) + armv7 (~34 MB) alohida
+  4. APK larni website/downloads/ ga qo'yadi, website/version.json ni yozadi (sha256, hajm, izohlar)
   5. Saytni Vercel'ga joylaydi                 (--no-deploy bilan o'tkazib yuboriladi)
   6. git commit + tag v<versiya> + push, GitHub Release yaratadi (zaxira nusxa)  (--no-git)
 
@@ -30,18 +30,36 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 PUBSPEC = ROOT / "pubspec.yaml"
 WEBSITE = ROOT / "website"
-APK_OUT = ROOT / "build" / "app" / "outputs" / "flutter-apk" / "app-release.apk"
+APK_DIR = ROOT / "build" / "app" / "outputs" / "flutter-apk"
 SITE_URL = "https://tajvid-yoli.vercel.app"  # domen olingach `set_domain.py` yangilaydi
 
 
 def run(cmd, cwd=ROOT, check=True):
     print(f"\n$ {' '.join(map(str, cmd))}")
+    if sys.platform == "win32":
+        cmd = [f'"{c}"' if " " in str(c) and not str(c).startswith('"') else str(c) for c in cmd]
     return subprocess.run(cmd, cwd=cwd, check=check, shell=(sys.platform == "win32"))
 
 
-def need(tool):
-    if not shutil.which(tool):
-        sys.exit(f"'{tool}' topilmadi. O'rnating va qayta urinib ko'ring.")
+# gh o'rnatilgach yangi terminal ochilmaguncha PATH'ga tushmasligi mumkin: odatiy joylarni ham tekshiramiz.
+EXTRA_PATHS = {
+    "gh": [r"C:\Program Files\GitHub CLI\gh.exe", "/c/Program Files/GitHub CLI/gh.exe"],
+}
+
+
+def tool(name):
+    found = shutil.which(name)
+    if found:
+        return name
+    for p in EXTRA_PATHS.get(name, []):
+        if Path(p).exists():
+            return p
+    return None
+
+
+def need(name):
+    if not tool(name):
+        sys.exit(f"'{name}' topilmadi. O'rnating va qayta urinib ko'ring.")
 
 
 def read_version():
@@ -78,8 +96,11 @@ def main():
     ap.add_argument("--notes-ar", default="", help="arabcha izoh")
     ap.add_argument("--min-build", type=int, default=None,
                     help="shu build raqamidan ESKI versiyalar majburan yangilanadi")
-    ap.add_argument("--arm64", action="store_true", help="faqat arm64 (tezroq, ~40 MB)")
-    ap.add_argument("--apk", help="tayyor APK yo'li (yig'ishni o'tkazib yuboradi)")
+    ap.add_argument("--split", action="store_true",
+                    help="har bir qurilma uchun alohida kichik APK (arm64 ~38 MB, armv7 ~34 MB). Standart: bitta universal APK")
+    ap.add_argument("--only-arm64", action="store_true", help="--split bilan: faqat arm64 yig'ish (tezroq)")
+    ap.add_argument("--apk", help="tayyor APK yo'li (yig'ishni o'tkazib yuboradi, sinov uchun)")
+    ap.add_argument("--no-obfuscate", action="store_true", help="kodni siqish/yashirishni o'chirish")
     ap.add_argument("--skip-tests", action="store_true")
     ap.add_argument("--no-deploy", action="store_true", help="Vercel'ga joylamaslik")
     ap.add_argument("--no-git", action="store_true", help="git commit/tag/push va GitHub Release yo'q")
@@ -93,32 +114,43 @@ def main():
         sys.exit(f"Yangi versiya ({a.version}) hozirgisidan ({cur_version}) katta bo'lishi kerak.")
     build = cur_build + 1
     min_build = a.min_build if a.min_build is not None else 0
+    split = a.split or a.only_arm64
+    abis = (["arm64-v8a"] if a.only_arm64 else ["arm64-v8a", "armeabi-v7a"]) if split else ["universal"]
 
     print(f"Versiya: {cur_version}+{cur_build}  ->  {a.version}+{build}")
-    print(f"APK: {'tayyor fayl ' + a.apk if a.apk else ('arm64' if a.arm64 else 'universal')}  |  majburiy yangilash: build < {min_build}"
-          if min_build else f"APK: {'tayyor fayl ' + a.apk if a.apk else ('arm64' if a.arm64 else 'universal')}  |  majburiy yangilash: yo'q")
+    print(f"APK: {'har bir qurilma uchun alohida (' + ', '.join(abis) + ')' if split else 'bitta universal (hamma qurilmalarga mos)'}  |  "
+          + (f"majburiy yangilash: build < {min_build}" if min_build else "majburiy yangilash: yo'q"))
     if a.dry_run:
         print("\n(dry-run: hech narsa o'zgartirilmadi)")
         return
 
-    for tool in ["flutter"] + ([] if a.no_deploy else ["vercel"]) + ([] if a.no_git else ["git", "gh"]):
-        need(tool)
+    for name in ["flutter"] + ([] if a.no_deploy else ["vercel"]) + ([] if a.no_git else ["git", "gh"]):
+        need(name)
 
     write_version(a.version, build)
+    built = {}
     try:
         if not a.skip_tests:
             run(["flutter", "analyze", "--no-fatal-infos"])
             run(["flutter", "test"])
         if a.apk:
-            apk = Path(a.apk)
-            if not apk.exists():
-                sys.exit(f"APK topilmadi: {apk}")
+            if not Path(a.apk).exists():
+                sys.exit(f"APK topilmadi: {a.apk}")
+            built[abis[0]] = Path(a.apk)
         else:
-            cmd = ["flutter", "build", "apk", "--release"]
-            if a.arm64:
+            # Standart: bitta universal APK. --split: har bir arxitektura uchun alohida (kichik) APK.
+            # --obfuscate: Dart kodi kichrayadi va o'qish qiyinlashadi (belgilar build/symbols da saqlanadi).
+            cmd = ["flutter", "build", "apk", "--release"] + (["--split-per-abi"] if split else [])
+            if not a.no_obfuscate:
+                cmd += ["--obfuscate", "--split-debug-info=build/symbols"]
+            if a.only_arm64:
                 cmd += ["--target-platform", "android-arm64"]
             run(cmd)
-            apk = APK_OUT
+            for abi in abis:
+                f = APK_DIR / ("app-release.apk" if abi == "universal" else f"app-{abi}-release.apk")
+                if not f.exists():
+                    sys.exit(f"APK topilmadi: {f}")
+                built[abi] = f
             gradlew = ROOT / "android" / ("gradlew.bat" if sys.platform == "win32" else "gradlew")
             if gradlew.exists():
                 run([str(gradlew), "--stop"], cwd=ROOT / "android", check=False)  # kompyuter qizib ketmasin
@@ -126,21 +158,30 @@ def main():
         write_version(cur_version, cur_build)  # xato bo'lsa versiya orqaga qaytadi
         sys.exit(f"Xato ({e.returncode}). Versiya {cur_version}+{cur_build} ga qaytarildi.")
 
-    dest = WEBSITE / "downloads" / "tajvid-yoli.apk"
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile(apk, dest)
+    downloads = WEBSITE / "downloads"
+    downloads.mkdir(parents=True, exist_ok=True)
+    for old in downloads.glob("*.apk"):
+        old.unlink()  # eski versiya fayllari qolib ketmasin
+    apks, dests = {}, []
+    for abi, src in built.items():
+        dest = downloads / ("tajvid-yoli.apk" if abi == "universal" else f"tajvid-yoli-{abi}.apk")
+        shutil.copyfile(src, dest)
+        dests.append(dest)
+        apks[abi] = {"url": f"{SITE_URL}/downloads/{dest.name}", "sha256": sha256_of(dest), "sizeBytes": dest.stat().st_size}
+        print(f"APK {abi}: {dest.name}  {dest.stat().st_size / 1048576:.1f} MB  sha256={apks[abi]['sha256'][:16]}...")
+    main_apk = apks.get("arm64-v8a") or apks["universal"]
     info = {
         "version": a.version,
         "build": build,
         "minBuild": min_build,
-        "url": f"{SITE_URL}/downloads/tajvid-yoli.apk",
-        "sha256": sha256_of(dest),
-        "sizeBytes": dest.stat().st_size,
+        "url": main_apk["url"],  # eski ilovalar va noma'lum arxitektura uchun zaxira (arm64)
+        "sha256": main_apk["sha256"],
+        "sizeBytes": main_apk["sizeBytes"],
+        **({"apks": apks} if split else {}),  # universal rejimda faqat "url" yetarli
         "notes": {k: v for k, v in (("uz", a.notes_uz), ("en", a.notes_en), ("ar", a.notes_ar)) if v},
         "publishedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
     }
     (WEBSITE / "version.json").write_text(json.dumps(info, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"\nAPK: {dest}  ({info['sizeBytes'] / 1048576:.1f} MB)  sha256={info['sha256'][:16]}...")
 
     if not a.no_deploy:
         run(["vercel", "deploy", "--prod", "--yes"], cwd=WEBSITE)
@@ -152,7 +193,7 @@ def main():
         run(["git", "tag", tag])
         run(["git", "push", "origin", "HEAD", "--follow-tags"])
         notes = a.notes_uz or a.notes_en or f"Tajvid yo'li {a.version}"
-        run(["gh", "release", "create", tag, str(dest), "--title", f"Tajvid yo'li {a.version}", "--notes", notes])
+        run([tool("gh"), "release", "create", tag, *map(str, dests), "--title", f"Tajvid yo'li {a.version}", "--notes", notes])
 
     print(f"\nTayyor: {a.version} (build {build}). Foydalanuvchilar ilovani ochganda yangilanish taklifini ko'radi.")
 

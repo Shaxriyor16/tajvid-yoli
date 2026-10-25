@@ -28,6 +28,23 @@ void main() {
     expect(AppVersionInfo.tryParse({..._json, 'build': '12'}), isNull);
   });
 
+  test('picks the APK matching the device ABI, falls back to the generic url', () {
+    final info = AppVersionInfo.tryParse({
+      ..._json,
+      'apks': {
+        'arm64-v8a': {'url': 'https://tajvid-yoli.vercel.app/downloads/a64.apk', 'sizeBytes': 40000000},
+        'armeabi-v7a': {'url': 'https://tajvid-yoli.vercel.app/downloads/a32.apk', 'sizeBytes': 36000000},
+        'broken': {'size': 1},
+      },
+    })!;
+    expect(info.apks.keys, containsAll(['arm64-v8a', 'armeabi-v7a']));
+    expect(info.apks.containsKey('broken'), isFalse);
+    expect(info.assetFor(['arm64-v8a', 'armeabi-v7a', 'armeabi']).url, endsWith('a64.apk'));
+    expect(info.assetFor(['armeabi-v7a', 'armeabi']).url, endsWith('a32.apk'));
+    expect(info.assetFor(['x86_64']).url, info.url); // zaxira
+    expect(info.assetFor(const []).url, info.url);
+  });
+
   test('decides none / optional / required by build number', () {
     final info = AppVersionInfo.tryParse(_json)!;
     expect(UpdateService.decide(info, 12), UpdateKind.none);

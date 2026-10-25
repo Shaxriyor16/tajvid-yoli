@@ -41,8 +41,6 @@
         <string>Profil rasmingizni yuklash uchun galereyaga ruxsat zarur.</string>
         <key>NSCameraUsageDescription</key>
         <string>Rasmga tushish va profilga yuklash uchun kameraga ruxsat zarur.</string>
-        <key>GADApplicationIdentifier</key>
-        <string>ca-app-pub-1197953375284219~4181552037</string>
         <key>LSRequiresIPhoneOS</key>
         <true/>
         <key>UIApplicationSceneManifest</key>

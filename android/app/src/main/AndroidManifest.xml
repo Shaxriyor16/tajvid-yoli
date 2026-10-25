@@ -15,10 +15,6 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:networkSecurityConfig="@xml/network_security_config">
 
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-1197953375284219~4181552037"/>
-
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -48,9 +44,6 @@
                 <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
             </intent-filter>
         </receiver>
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/ic_stat_notify" />
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />

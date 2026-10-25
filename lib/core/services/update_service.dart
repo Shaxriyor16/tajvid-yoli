@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
@@ -8,6 +9,23 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../l10n/app_localizations.dart';
+
+/// Bitta arxitektura uchun APK (arm64-v8a, armeabi-v7a, ...).
+class ApkAsset {
+  final String url;
+  final String sha256;
+  final int sizeBytes;
+  const ApkAsset({required this.url, this.sha256 = '', this.sizeBytes = 0});
+
+  static ApkAsset? tryParse(Object? json) {
+    if (json is! Map || json['url'] is! String) return null;
+    return ApkAsset(
+      url: json['url'] as String,
+      sha256: json['sha256'] is String ? json['sha256'] as String : '',
+      sizeBytes: json['sizeBytes'] is int ? json['sizeBytes'] as int : 0,
+    );
+  }
+}
 
 /// `version.json` (saytda) mazmuni. `deploy/release.py` har release'da yangilaydi.
 class AppVersionInfo {
@@ -18,6 +36,7 @@ class AppVersionInfo {
   final String sha256;
   final int sizeBytes;
   final Map<String, String> notes;
+  final Map<String, ApkAsset> apks;
 
   const AppVersionInfo({
     required this.version,
@@ -27,6 +46,7 @@ class AppVersionInfo {
     this.sha256 = '',
     this.sizeBytes = 0,
     this.notes = const {},
+    this.apks = const {},
   });
 
   static AppVersionInfo? tryParse(Object? json) {
@@ -37,6 +57,7 @@ class AppVersionInfo {
     if (build is! int || version is! String || url is! String) return null;
     final minBuild = json['minBuild'];
     final notes = json['notes'];
+    final apks = json['apks'];
     return AppVersionInfo(
       version: version,
       build: build,
@@ -51,7 +72,24 @@ class AppVersionInfo {
                   e.key as String: e.value as String
             }
           : const {},
+      apks: apks is Map
+          ? {
+              for (final e in apks.entries)
+                if (e.key is String && ApkAsset.tryParse(e.value) != null)
+                  e.key as String: ApkAsset.tryParse(e.value)!
+            }
+          : const {},
     );
+  }
+
+  /// Qurilma qo'llaydigan arxitekturalar (afzallik tartibida) bo'yicha eng mos APK;
+  /// topilmasa umumiy `url` ga qaytadi.
+  ApkAsset assetFor(List<String> supportedAbis) {
+    for (final abi in supportedAbis) {
+      final a = apks[abi];
+      if (a != null) return a;
+    }
+    return ApkAsset(url: url, sha256: sha256, sizeBytes: sizeBytes);
   }
 
   String noteFor(String lang) => notes[lang] ?? notes['uz'] ?? '';
@@ -105,7 +143,13 @@ class UpdateService {
     if (_checkedThisLaunch || !Platform.isAndroid) return;
     _checkedThisLaunch = true;
     final info = await fetch();
-    if (info == null || !isTrustedUrl(info.url)) return;
+    if (info == null) return;
+    List<String> abis = const [];
+    try {
+      abis = (await DeviceInfoPlugin().androidInfo).supportedAbis;
+    } catch (_) {}
+    final asset = info.assetFor(abis);
+    if (!isTrustedUrl(asset.url)) return;
     final current =
         int.tryParse((await PackageInfo.fromPlatform()).buildNumber) ?? 0;
     final kind = decide(info, current);
@@ -121,15 +165,15 @@ class UpdateService {
     }
     await prefs.setInt(_lastPromptKey, DateTime.now().millisecondsSinceEpoch);
     if (!context.mounted) return;
-    await _showDialog(context, info, kind == UpdateKind.required);
+    await _showDialog(context, info, asset, kind == UpdateKind.required);
   }
 
-  static Future<void> _showDialog(
-      BuildContext context, AppVersionInfo info, bool required) {
+  static Future<void> _showDialog(BuildContext context, AppVersionInfo info,
+      ApkAsset asset, bool required) {
     final l10n = AppLocalizations.of(context);
     final note = info.noteFor(l10n.locale.languageCode);
-    final mb = info.sizeBytes > 0
-        ? ' (${(info.sizeBytes / 1048576).round()} MB)'
+    final mb = asset.sizeBytes > 0
+        ? ' (${(asset.sizeBytes / 1048576).round()} MB)'
         : '';
     return showCupertinoDialog<void>(
       context: context,
@@ -155,7 +199,7 @@ class UpdateService {
             CupertinoDialogAction(
               isDefaultAction: true,
               onPressed: () async {
-                await launchUrl(Uri.parse(info.url),
+                await launchUrl(Uri.parse(asset.url),
                     mode: LaunchMode.externalApplication);
                 if (!required && ctx.mounted) Navigator.of(ctx).pop();
               },
