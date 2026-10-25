@@ -38,7 +38,6 @@ const state = {
 let fb = null; // { app, auth, authMod, fs, db, fnMod, functions }
 
 const configured = () => !!(CONFIG.firebase.apiKey && CONFIG.firebase.appId);
-const adminList = () => (CONFIG.adminEmails || []).map((e) => String(e).trim().toLowerCase()).filter(Boolean);
 
 /* ---------------- Yordamchilar ---------------- */
 const icon = (id, cls = "") => `<svg class="${cls}" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -435,23 +434,22 @@ function check(ok, title, text) {
   return `<li><span class="st ${cls}">${icon(ic)}</span><div><b>${esc(title)}</b><small>${text}</small></div></li>`;
 }
 function viewSetup() {
-  const admins = adminList();
   const rules = `function isAdmin() {
   return request.auth != null
     && request.auth.token.email_verified == true
     && request.auth.token.email.lower() in [
-      ${admins.length ? admins.map((a) => `'${a}'`).join(",\n      ") : "'sizning.gmail@gmail.com'"}
+      'sizning.gmail@gmail.com'
     ];
 }
-// match /users/{uid} ichida:
-allow read: if isVerifiedOwner(uid) || isAdmin();`;
+// match /users/{uid} va /feedback/{id} ichida:
+allow read: if isAdmin();`;
   return `
     <div class="grid2 even">
       <section class="glass panel">
         <div class="head"><h2>Ulanish holati</h2></div>
         <ul class="check">
           ${check(configured(), "Firebase Web konfiguratsiyasi", configured() ? "apiKey va appId kiritilgan." : "<code>js/config.js</code> da <b>apiKey</b> va <b>appId</b> bo'sh.")}
-          ${check(admins.length > 0, "Admin email ro'yxati", admins.length ? esc(admins.join(", ")) : "<code>adminEmails</code> bo'sh — hech kim kira olmaydi.")}
+          ${check(state.demo ? null : !!state.me, "Admin ruxsati", state.demo ? "Demo rejim." : state.me ? "Firestore qoidalari bu hisobga ruxsat berdi." : "Kirilmagan.")}
           ${check(state.demo ? null : !!state.me, "Kirish", state.demo ? "Demo rejim: haqiqiy hisobga ulanmagan." : state.me ? `${esc(state.me.email)} sifatida kirgansiz.` : "Kirilmagan.")}
           ${check(state.demo ? null : state.status === "ready", "Ma'lumot o'qish", state.demo ? "Demo (soxta) ma'lumotlar." : state.status === "ready" ? `${state.users.length} ta foydalanuvchi o'qildi (${state.source === "functions" ? "Cloud Functions" : "Firestore"}).` : state.status === "error" ? esc(state.error?.title || "Xato") : "Hali yuklanmagan.")}
         </ul>
@@ -465,8 +463,8 @@ allow read: if isVerifiedOwner(uid) || isAdmin();`;
         <ol class="steps">
           <li><b>Web ilova yarating.</b> Firebase Console → Project settings → Your apps → <b>Add app → Web</b>. Chiqqan <code>apiKey</code> va <code>appId</code> ni <code>admin/js/config.js</code> ga yozing.</li>
           <li><b>Admin hisobini Console'da yarating:</b> Authentication → Users → <b>Add user</b> (email va parol). Panelda hisob yaratib bo'lmaydi.</li>
-          <li><b>Admin emailini yozing</b> (<code>adminEmails</code>) va <b>Authentication → Settings → Authorized domains</b> da panel joylashgan domenni qo'shing (<code>localhost</code> tayyor).</li>
-          <li><b>Firestore qoidasini yangilang</b> (<code>firestore.rules</code> allaqachon tayyorlangan, faqat emailni yozing), keyin: <pre class="code">firebase deploy --only firestore:rules</pre></li>
+          <li><b>Admin emailini faqat Firestore qoidasiga yozing</b> (<code>firestore.rules</code> → <code>isAdmin()</code>). Brauzer fayllarida admin emaili saqlanmaydi.</li>
+          <li><b>Qoidani deploy qiling:</b> <pre class="code">firebase deploy --only firestore:rules</pre></li>
           <li><b>Ixtiyoriy — to'liq ro'yxat:</b> <code>source: "functions"</code> va <pre class="code">firebase deploy --only functions:tajvid:adminListUsers</pre> (Blaze tarifi kerak).</li>
         </ol>
         <details style="margin-top:14px"><summary style="cursor:pointer;color:var(--accent);font-weight:700">Qoida namunasi</summary><pre class="code">${esc(rules)}</pre></details>
@@ -629,8 +627,7 @@ function showGate(kind, extra) {
     return;
   }
   $("#auth-form").hidden = false;
-  if (kind === "denied") gateBox("err", "Ruxsat yo'q", `${esc(extra || "Bu hisob")} admin ro'yxatida emas.`);
-  if (kind === "noadmins") gateBox("err", "Admin emaili yozilmagan", "<code>config.js</code> dagi <b>adminEmails</b> ro'yxatiga o'z emailingizni yozing.");
+  if (kind === "denied") gateBox("err", "Ruxsat yo'q", `${esc(extra || "Bu hisob")} admin emas.`);
   if (kind === "error") gateBox("err", "Kirib bo'lmadi", esc(extra || ""));
   if (kind === "info") gateBox("ok", "Tayyor", esc(extra || ""));
 }
@@ -678,17 +675,18 @@ function startApp() {
 }
 async function handleUser(u) {
   if (!u) return showGate();
-  const admins = adminList();
-  const mail = (u.email || "").toLowerCase();
-  if (!admins.length) {
-    await fb.authMod.signOut(fb.auth);
-    return showGate("noadmins");
-  }
-  if (!admins.includes(mail)) {
-    await fb.authMod.signOut(fb.auth);
-    return showGate("denied", u.email);
-  }
   if (!u.emailVerified) return showVerify(u);
+  // Admin ekanini brauzer emas, Firestore qoidasi hal qiladi: ruxsat bo'lmasa o'qish rad etiladi.
+  if (!state.demo) {
+    try {
+      await fb.fs.getDocs(fb.fs.query(fb.fs.collection(fb.db, "feedback"), fb.fs.limit(1)));
+    } catch (e) {
+      if ((e && e.code) === "permission-denied") {
+        await fb.authMod.signOut(fb.auth);
+        return showGate("denied", u.email);
+      }
+    }
+  }
   state.me = { email: u.email, name: u.displayName || u.email };
   startApp();
 }
