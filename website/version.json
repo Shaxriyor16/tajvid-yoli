@@ -1,0 +1,14 @@
+{
+  "version": "1.0.1",
+  "build": 2,
+  "minBuild": 0,
+  "url": "https://tajvid-yoli.vercel.app/downloads/tajvid-yoli.apk",
+  "sha256": "e92847edf1b601a29b7ad3af71e2d0b5a2fe9b0567581493e94896b13a472716",
+  "sizeBytes": 70802006,
+  "notes": {
+    "uz": "Birinchi versiya: darslar, AI tekshiruv, bildirishnomalar va fikr bildirish",
+    "en": "First release: lessons, AI check, notifications and feedback",
+    "ar": "الإصدار الأول: الدروس وفحص الذكاء الاصطناعي والإشعارات والملاحظات"
+  },
+  "publishedAt": "2026-10-25T03:44:52Z"
+}
