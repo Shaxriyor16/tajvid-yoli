@@ -27,8 +27,20 @@ class InputValidators {
         _emailRegExp.hasMatch(value);
   }
 
+  /// Eng ko'p ishlatiladigan parollar (credential stuffing hujumlarida birinchi sinaladi).
+  static const _commonPasswords = {
+    '12345678', '123456789', '1234567890', 'password', 'password1', 'qwerty123',
+    'qwertyui', 'iloveyou', '11111111', '00000000', '12341234', 'abc12345',
+    'admin123', 'letmein1', 'welcome1', 'tajvid123', 'qur12345', 'allah123',
+    'bismillah', 'muhammad1', 'abcd1234', '1q2w3e4r', 'q1w2e3r4', 'asdf1234',
+  };
+
+  /// Kamida 8 belgi, harf va raqam birga, va keng tarqalgan parol emas.
   static bool isValidPassword(String password) =>
-      password.length >= passwordMinLength;
+      password.length >= passwordMinLength &&
+      RegExp(r'\p{L}', unicode: true).hasMatch(password) &&
+      RegExp(r'\d').hasMatch(password) &&
+      !_commonPasswords.contains(password.toLowerCase());
 
   static bool isValidName(String name) {
     final value = name.trim();

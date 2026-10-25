@@ -13,12 +13,12 @@ const {
   hasSupportedAuthProvider,
 } = require('./validation');
 const { createGroqProvider, GroqProviderError } = require('./groq_provider');
-const { parseAdminEmails, isAdminToken, toAdminUser } = require('./admin');
+const { parseAdminUids, isAdminUid, toAdminUser } = require('./admin');
 initializeApp();
 const groqApiKey = defineSecret('GROQ_API_KEY');
-// Admin panel uchun ruxsat etilgan Google emaillar (vergul bilan): functions/.env ichida
-// ADMIN_EMAILS=siz@gmail.com
-const adminEmails = defineString('ADMIN_EMAILS', { default: '' });
+// Admin panel uchun ruxsat etilgan hisob UID lari (vergul bilan): functions/.env ichida
+// ADMIN_UIDS=uid1,uid2   (firestore.rules dagi isAdmin() ro'yxati bilan bir xil bo'lsin)
+const adminUids = defineString('ADMIN_UIDS', { default: '' });
 const groqChatModel = defineString('GROQ_CHAT_MODEL', {
   default: 'openai/gpt-oss-20b',
 });
@@ -43,6 +43,10 @@ exports.deleteAccount = onCall({ region: 'us-central1', enforceAppCheck: true,
   // Scope every deletion to the authenticated user; never accept a client UID.
   await getFirestore().recursiveDelete(getFirestore().collection('users').doc(uid));
   await getFirestore().collection('_aiQuota').doc(uid).delete();
+  await getFirestore().collection('feedbackMeta').doc(uid).delete();
+  // Foydalanuvchining barcha mulohazalari (ism/email saqlangan) ham o'chiriladi.
+  const feedbackDocs = await getFirestore().collection('feedback').where('uid', '==', uid).get();
+  await Promise.all(feedbackDocs.docs.map((d) => d.ref.delete()));
   try {
     await getStorage().bucket().file(`users/${uid}/profile.jpg`).delete({ ignoreNotFound: true });
   } catch (error) {
@@ -100,13 +104,13 @@ exports.tajvidAi = onCall({
 });
 
 // Admin panel: Firebase Auth'dagi BARCHA foydalanuvchilar (tasdiqlanmaganlari ham),
-// Firestore profili bilan birlashtirilgan. Faqat tasdiqlangan admin email chaqira oladi.
+// Firestore profili bilan birlashtirilgan. Faqat admin UID chaqira oladi.
 // Faqat o'qiydi — hech narsani o'zgartirmaydi/o'chirmaydi.
 exports.adminListUsers = onCall({
   region: 'us-central1', timeoutSeconds: 120, memory: '512MiB', maxInstances: 2,
 }, async (request) => {
   if (!request.auth) throw new HttpsError('unauthenticated', 'Sign in required');
-  if (!isAdminToken(request.auth.token, parseAdminEmails(adminEmails.value()))) {
+  if (!isAdminUid(request.auth.uid, parseAdminUids(adminUids.value()))) {
     throw new HttpsError('permission-denied', 'Admin only');
   }
   const MAX_USERS = 20000;

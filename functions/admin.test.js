@@ -1,22 +1,21 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { parseAdminEmails, isAdminToken, providerOf, toAdminUser } = require('./admin');
+const { parseAdminUids, isAdminUid, providerOf, toAdminUser } = require('./admin');
 
-test('parses a comma separated admin list case-insensitively', () => {
-  assert.deepEqual(parseAdminEmails(' A@Gmail.com, ,b@x.uz '), ['a@gmail.com', 'b@x.uz']);
-  assert.deepEqual(parseAdminEmails(''), []);
-  assert.deepEqual(parseAdminEmails(undefined), []);
+test('parses a comma separated admin uid list', () => {
+  assert.deepEqual(parseAdminUids(' abc , ,Def '), ['abc', 'Def']);
+  assert.deepEqual(parseAdminUids(''), []);
+  assert.deepEqual(parseAdminUids(undefined), []);
 });
 
-test('only verified listed emails are admins', () => {
-  const list = ['boss@gmail.com'];
-  assert.equal(isAdminToken({ email: 'Boss@Gmail.com', email_verified: true }, list), true);
-  assert.equal(isAdminToken({ email: 'boss@gmail.com', email_verified: false }, list), false);
-  assert.equal(isAdminToken({ email: 'other@gmail.com', email_verified: true }, list), false);
-  assert.equal(isAdminToken({ email_verified: true }, list), false);
-  assert.equal(isAdminToken(null, list), false);
-  // bo'sh ro'yxat hech kimni admin qilmaydi
-  assert.equal(isAdminToken({ email: 'boss@gmail.com', email_verified: true }, []), false);
+test('only listed uids are admins (case-sensitive, never emails)', () => {
+  const list = ['b4QUKm9l'];
+  assert.equal(isAdminUid('b4QUKm9l', list), true);
+  assert.equal(isAdminUid('b4qukm9l', list), false);
+  assert.equal(isAdminUid('other', list), false);
+  assert.equal(isAdminUid('', list), false);
+  assert.equal(isAdminUid(undefined, list), false);
+  assert.equal(isAdminUid('b4QUKm9l', []), false);
 });
 
 test('provider is detected from profile or sign-in providers', () => {

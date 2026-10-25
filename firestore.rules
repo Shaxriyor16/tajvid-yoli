@@ -89,8 +89,25 @@ service cloud.firestore {
         && d.createdAt == request.time;
     }
 
+    // Tezlik cheklovi (server tomonida): har bir mulohaza BIR XIL paketda feedbackMeta/{uid}
+    // hujjatini yangilashi shart, u esa oxirgi yozishdan kamida 60 soniya o'tganini talab qiladi.
+    // Shunda bitta hisob cheksiz spam yoza olmaydi (kvota va xarajat himoyasi).
+    function validMeta() {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['lastAt']) && d.lastAt == request.time;
+    }
+
+    match /feedbackMeta/{uid} {
+      allow read: if isAdmin();
+      allow create: if isVerifiedOwner(uid) && validMeta();
+      allow update: if isVerifiedOwner(uid) && validMeta()
+        && request.time > resource.data.lastAt + duration.value(60, 's');
+      allow delete: if false;
+    }
+
     match /feedback/{id} {
-      allow create: if isVerifiedOwner(request.resource.data.uid) && isValidFeedback();
+      allow create: if isVerifiedOwner(request.resource.data.uid) && isValidFeedback()
+        && getAfter(/databases/$(database)/documents/feedbackMeta/$(request.resource.data.uid)).data.lastAt == request.time;
       allow read: if isAdmin();
       allow update: if isAdmin()
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])

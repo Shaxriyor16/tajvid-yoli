@@ -1,3 +1,4 @@
+import '../../core/utils/login_throttle.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../core/db/app_database.dart';
@@ -215,11 +216,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future<void> _onEmailSignInRequested(
       AuthEmailSignInRequested event, Emitter<AuthState> emit) async {
+    // Brute-force / credential stuffing: ketma-ket xatolardan keyin qurilma vaqtincha bloklanadi.
+    if (await LoginThrottle.remaining() > Duration.zero) {
+      emit(const AuthError('err_too_many'));
+      return;
+    }
     emit(AuthLoading());
     try {
       final user =
           await _authService.signInWithEmail(event.email, event.password);
       if (user != null) {
+        await LoginThrottle.reset();
         if (!await _authService.isCurrentEmailVerified()) {
           emit(AuthNeedsEmailVerification(user.email));
         } else {
@@ -227,10 +234,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(AuthAuthenticated(user));
         }
       } else {
+        await LoginThrottle.recordFailure();
         emit(const AuthError('err_bad_login'));
       }
     } catch (e) {
-      emit(AuthError(ErrorHandler.toUserFriendly(e)));
+      final message = ErrorHandler.toUserFriendly(e);
+      // Faqat noto'g'ri hisob ma'lumotlari urinish hisoblanadi (tarmoq xatosi emas).
+      if (message == 'err_bad_credentials' || message == 'err_sign_in') {
+        await LoginThrottle.recordFailure();
+      }
+      emit(AuthError(message));
     }
   }
 

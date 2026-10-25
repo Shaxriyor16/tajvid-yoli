@@ -79,3 +79,8 @@ android/.kotlin/
 android/captures/
 android/gradle/wrapper/gradle-wrapper.jar
 **/GeneratedPluginRegistrant.*
+
+# Qoidalar testlari: o'rnatilgan paketlar
+firestore-tests/node_modules/
+firestore-debug.log
+firestore-tests/firestore-debug.log

@@ -3,18 +3,16 @@
 // Admin panel uchun sof (toza) yordamchi funksiyalar — Firebase'ga bog'liq emas,
 // shuning uchun oddiy `node --test` bilan tekshiriladi.
 
-function parseAdminEmails(value) {
+function parseAdminUids(value) {
   return String(value || '')
     .split(',')
-    .map((e) => e.trim().toLowerCase())
+    .map((e) => e.trim())
     .filter(Boolean);
 }
 
-// Faqat tasdiqlangan emaili ro'yxatdagi foydalanuvchi admin hisoblanadi.
-function isAdminToken(token, adminEmails) {
-  if (!token || token.email_verified !== true) return false;
-  const email = String(token.email || '').trim().toLowerCase();
-  return email.length > 0 && adminEmails.includes(email);
+// Admin EMAIL bilan emas, hisob UID raqami bilan aniqlanadi (firestore.rules dagi isAdmin() bilan bir xil).
+function isAdminUid(uid, adminUids) {
+  return typeof uid === 'string' && uid.length > 0 && adminUids.includes(uid);
 }
 
 function providerOf(providerIds, profileProvider) {
@@ -49,4 +47,4 @@ function toAdminUser(u, profile) {
   };
 }
 
-module.exports = { parseAdminEmails, isAdminToken, providerOf, toAdminUser };
+module.exports = { parseAdminUids, isAdminUid, providerOf, toAdminUser };

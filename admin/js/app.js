@@ -645,11 +645,11 @@ function authError(e) {
   const map = {
     "auth/invalid-credential": ["Email yoki parol noto'g'ri", "Tekshirib qayta kiriting."],
     "auth/wrong-password": ["Email yoki parol noto'g'ri", ""],
-    "auth/user-not-found": ["Bunday hisob topilmadi", "Hisob Firebase Console → Authentication → Users → Add user orqali yaratiladi."],
+    "auth/user-not-found": ["Email yoki parol noto'g'ri", "Tekshirib qayta kiriting."],
     "auth/invalid-email": ["Email noto'g'ri", "Manzilni tekshiring."],
     "auth/weak-password": ["Parol juda oddiy", "Kamida 8 belgi, harf va raqam ishlating."],
     "auth/too-many-requests": ["Urinishlar ko'p", "Biroz kutib, qayta urinib ko'ring."],
-    "auth/user-disabled": ["Hisob bloklangan", ""],
+    "auth/user-disabled": ["Email yoki parol noto'g'ri", "Tekshirib qayta kiriting."],
     "auth/network-request-failed": ["Internet aloqasi yo'q", "Ulanishni tekshiring."],
     "auth/operation-not-allowed": ["Email/parol yoqilmagan", "Firebase Console → Authentication → Sign-in method → Email/Password ni yoqing."],
     "auth/unauthorized-domain": ["Bu domen ruxsat etilmagan", `<b>${esc(location.hostname)}</b> ni Authentication → Settings → Authorized domains ga qo'shing. Mahalliy ishlatsangiz <b>localhost</b> orqali oching.`],
@@ -700,9 +700,38 @@ async function initFirebase() {
   }
   authM.onAuthStateChanged(fb.auth, handleUser);
 }
+
+/* ---------------- Kirish himoyasi (brute-force) ---------------- */
+// Ketma-ket noto'g'ri urinishlardan keyin kirish vaqtincha bloklanadi (30 s -> 15 daq gacha, ikki baravardan).
+// Bu brauzer darajasidagi qo'shimcha to'siq; asosiy cheklovni Firebase Auth serverda qo'llaydi.
+const LOCK_KEY = "admin-login-guard";
+function guardRead() {
+  try {
+    return JSON.parse(localStorage.getItem(LOCK_KEY)) || { n: 0, until: 0 };
+  } catch {
+    return { n: 0, until: 0 };
+  }
+}
+function guardWrite(g) {
+  try {
+    localStorage.setItem(LOCK_KEY, JSON.stringify(g));
+  } catch {}
+}
+const guardRemaining = () => Math.max(0, Math.ceil((guardRead().until - Date.now()) / 1000));
+function guardFail() {
+  const g = guardRead();
+  g.n += 1;
+  if (g.n >= 5) g.until = Date.now() + Math.min(900, 30 * 2 ** Math.min(g.n - 5, 10)) * 1000;
+  guardWrite(g);
+}
+const guardReset = () => guardWrite({ n: 0, until: 0 });
+const fmtWait = (sec) => (sec >= 60 ? `${Math.ceil(sec / 60)} daqiqa` : `${sec} soniya`);
+
 async function submitAuth(e) {
   e.preventDefault();
   if (busyAuth || !fb) return;
+  const wait = guardRemaining();
+  if (wait > 0) return gateBox("err", "Urinishlar ko'p", `Xavfsizlik uchun ${fmtWait(wait)} kutib, qayta urinib ko'ring.`);
   const email = $("#a-email").value.trim().toLowerCase();
   const pass = $("#a-pass").value;
   const ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
@@ -717,8 +746,11 @@ async function submitAuth(e) {
   $("#a-submit").disabled = true;
   try {
     await fb.authMod.signInWithEmailAndPassword(fb.auth, email, pass);
+    guardReset();
     $("#a-pass").value = "";
   } catch (err) {
+    const code = (err && err.code) || "";
+    if (/invalid-credential|wrong-password|user-not-found|invalid-email|too-many-requests/.test(code)) guardFail();
     authError(err);
   } finally {
     busyAuth = false;

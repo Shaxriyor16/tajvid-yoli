@@ -68,10 +68,13 @@ class FeedbackService {
     final now = DateTime.now().millisecondsSinceEpoch;
     if (now - last < cooldown.inMilliseconds) throw const FeedbackTooFast();
 
-    await FirebaseFirestore.instance
-        .collection('feedback')
-        .add(entry.toMap())
-        .timeout(const Duration(seconds: 15));
+    // Bitta paket: tezlik cheklovi hujjati + mulohaza (qoidalar ikkalasini birga talab qiladi).
+    final db = FirebaseFirestore.instance;
+    final batch = db.batch()
+      ..set(db.collection('feedbackMeta').doc(entry.uid),
+          {'lastAt': FieldValue.serverTimestamp()})
+      ..set(db.collection('feedback').doc(), entry.toMap());
+    await batch.commit().timeout(const Duration(seconds: 15));
     await prefs.setInt(_lastKey, now);
   }
 }

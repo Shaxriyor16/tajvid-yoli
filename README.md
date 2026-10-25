@@ -171,6 +171,8 @@ Adminlar `firestore.rules` dagi `isAdmin()` ro'yxatida **UID** bilan aniqlanadi 
 Console'da hisob yarating (Authentication → Users → Add user), uning UID sini ro'yxatga qo'shib, qoidalarni qayta deploy qiling.
 
 ### Xavfsizlik
+Batafsil: [SECURITY.md](SECURITY.md) (himoya qatlamlari, qo'lda qilinadigan sozlamalar, qabul qilingan xavflar)
+
 - Har bir foydalanuvchi faqat **o'z** hujjatini o'qiydi va yozadi, maydonlar qoidalarda qat'iy tekshiriladi
 - Mulohazani istalgan tasdiqlangan foydalanuvchi **yozadi**, lekin faqat admin **o'qiydi**
 - Admin panel sahifasi ochiq bo'lsa ham, ma'lumotni faqat admin hisobi (UID) ola oladi
