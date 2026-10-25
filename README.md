@@ -181,6 +181,8 @@ Console'da hisob yarating (Authentication → Users → Add user), uning UID sin
 - Sayt toza manzillarda ishlaydi, domen **ildizida** joylanishi kerak (`tajvidyoli.uz/`)
 - Admin panelni saytdan **alohida** (`boshqaruv.<domen>`) joylang va server darajasida yoping:
   [`deploy/nginx.example.conf`](deploy/nginx.example.conf), [`admin/README.md`](admin/README.md), [`website/README.md`](website/README.md)
+- Domen olingach SEO manzillarini almashtiring: `python deploy/set_domain.py https://tajvidyoli.uz` (canonical, og:url, sitemap, robots)
+- Google qidiruvi: sayt `sitemap.xml` va `robots.txt` bilan tayyor; Google Search Console'da domenni qo'shib, sitemap'ni yuboring
 - Katta `tajvid-yoli.apk` ni omborga emas, GitHub **Releases** ga qo'ying
 
 ## 🗂 Tuzilma

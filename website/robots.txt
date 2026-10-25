@@ -1,2 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /downloads/
+
+Sitemap: https://tajvid-yoli.vercel.app/sitemap.xml
