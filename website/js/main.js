@@ -168,6 +168,43 @@
 
   /* "Chiqqanda xabar bering" oynasi */
   var dlg = document.getElementById("notify");
+
+  /* Xat matnlari: sizga boradigan xabar (uz) va obunachiga boradigan tasdiq (til bo'yicha).
+     FormSubmit xat dizaynini o'zgartirishga ruxsat bermaydi, faqat andoza (box) va matnlarni. */
+  var AUTO = {
+    uz:
+      "Assalomu alaykum!\n\n" +
+      "Tajvid yo'li ilovasi chiqqanda sizga xabar beramiz — so'rovingiz qabul qilindi. Rahmat!\n\n" +
+      "Ilova nima beradi:\n" +
+      "• Arab alifbosidan tajvid qoidalarigacha bosqichma-bosqich darslar\n" +
+      "• Talaffuzingizni tekshiruvchi sun'iy intellekt\n" +
+      "• Kunlik reja, streak va sertifikat\n\n" +
+      "Bu avtomatik xabar, unga javob berish shart emas. Emailingiz faqat ilova chiqishi haqida xabar berish uchun ishlatiladi.\n\n" +
+      "Tajvid yo'li jamoasi",
+    en:
+      "Hello!\n\n" +
+      "We'll let you know as soon as the Tajvid yo'li app is released. Your request has been received. Thank you!\n\n" +
+      "What the app offers:\n" +
+      "• Step-by-step lessons from the Arabic alphabet to tajweed rules\n" +
+      "• An AI that checks your pronunciation\n" +
+      "• Daily plan, streak and certificates\n\n" +
+      "This is an automatic message, no reply is needed. Your email is used only to tell you about the release.\n\n" +
+      "The Tajvid yo'li team",
+  };
+  function mailPayload(email) {
+    return {
+      email: email,
+      Rozilik: "Ha — faqat chiqish haqida xabar berish uchun",
+      Til: lang === "en" ? "English" : "O'zbekcha",
+      Sahifa: location.href,
+      _subject: "🌙 Tajvid yo'li — yangi kutuvchi: " + email,
+      _replyto: email,
+      _template: "box",
+      _captcha: "false",
+      _autoresponse: AUTO[lang] || AUTO.uz,
+    };
+  }
+
   var form = document.getElementById("notify-form");
   if (dlg && form) {
     var msg = document.getElementById("nf-msg");
@@ -242,15 +279,7 @@
       fetch(form.getAttribute("data-endpoint"), {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          email: email,
-          consent: "ha",
-          _subject: form.elements._subject.value,
-          _template: "table",
-          _captcha: "false",
-          til: lang,
-          sahifa: location.href,
-        }),
+        body: JSON.stringify(mailPayload(email)),
       })
         .then(function (r) {
           return r.json().then(function (d) {
