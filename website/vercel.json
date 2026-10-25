@@ -73,6 +73,15 @@
           "value": "attachment; filename=\"tajvid-yoli.apk\""
         }
       ]
+    },
+    {
+      "source": "/version.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
     }
   ]
 }

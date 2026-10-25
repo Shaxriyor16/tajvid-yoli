@@ -320,32 +320,34 @@
   }
 })();
 
-/* APK yuklab olish: downloads/tajvid-yoli.apk mavjud bo'lsa yuklab olish tugmasi
-   ko'rinadi, "Chiqqanda xabar bering" esa yashirinadi. Fayl bo'lmasa — aksincha. */
+/* APK yuklab olish: /version.json (release skripti yozadi) mavjud bo'lsa yuklab olish tugmasi
+   versiya va hajm bilan ko'rinadi, "Chiqqanda xabar bering" esa yashirinadi. Fayl bo'lmasa, aksincha. */
 (function () {
   var apk = document.getElementById("apk-btn");
   var soon = document.querySelector('[data-open="notify"]');
   var note = document.getElementById("soon-note");
   if (!apk || !window.fetch) return;
-  fetch(apk.getAttribute("href"), { method: "HEAD", cache: "no-store" })
+  fetch("/version.json", { cache: "no-store" })
     .then(function (r) {
-      var type = r.headers.get("content-type") || "";
-      if (!r.ok || type.indexOf("text/html") === 0) return;
-      var bytes = parseInt(r.headers.get("content-length") || "0", 10);
-      var mb = bytes ? Math.round(bytes / 1048576) + " MB" : "";
+      return r.ok ? r.json() : null;
+    })
+    .then(function (v) {
+      if (!v || typeof v.url !== "string" || !/^\/downloads\/[\w.-]+\.apk$/.test(new URL(v.url, location.href).pathname)) return;
+      apk.setAttribute("href", new URL(v.url, location.href).pathname);
       apk.hidden = false;
       if (soon) soon.hidden = true;
-      if (mb) {
-        var size = document.createElement("small");
-        size.textContent = mb;
-        size.style.cssText = "opacity:.7;font-weight:600;margin-left:6px";
-        apk.appendChild(size);
-      }
+      var label = "v" + String(v.version || "").replace(/[^\d.]/g, "");
+      if (v.sizeBytes) label += " · " + Math.round(v.sizeBytes / 1048576) + " MB";
+      var small = document.createElement("small");
+      small.textContent = label;
+      small.style.cssText = "opacity:.7;font-weight:600;margin-left:6px";
+      apk.appendChild(small);
       if (note) {
         note.innerHTML =
           '<ul class="apk-meta">' +
           '<li><span lang="uz">Android 5.0 va undan yuqori</span><span lang="en">Android 5.0 or newer</span></li>' +
           '<li><span lang="uz">Bepul</span><span lang="en">Free</span></li>' +
+          '<li><span lang="uz">Ilova o‘zi yangilanadi: yangi versiya chiqsa, taklif ko‘rsatadi</span><span lang="en">The app tells you when a new version is out</span></li>' +
           '<li><span lang="uz">O‘rnatishda “Nomaʼlum manbalar” ruxsatini bering</span><span lang="en">Allow “Install unknown apps” when asked</span></li>' +
           "</ul>";
       }

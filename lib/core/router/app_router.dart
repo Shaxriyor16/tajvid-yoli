@@ -36,9 +36,13 @@ import 'router_refresh_stream.dart';
 class AppRouter {
   AppRouter._();
 
+  /// Dialoglar (masalan, yangilanish taklifi) uchun ildiz Navigator kaliti.
+  static final rootNavigatorKey = GlobalKey<NavigatorState>();
+
   static GoRouter createRouter(AuthBloc authBloc,
       {required GoRouterRefreshStream refresh}) {
     return GoRouter(
+      navigatorKey: rootNavigatorKey,
       initialLocation: '/splash',
       refreshListenable: refresh,
       redirect: (context, state) {

@@ -187,6 +187,18 @@ Batafsil: [SECURITY.md](SECURITY.md) (himoya qatlamlari, qo'lda qilinadigan sozl
 - Google qidiruvi: sayt `sitemap.xml` va `robots.txt` bilan tayyor; Google Search Console'da domenni qo'shib, sitemap'ni yuboring
 - Katta `tajvid-yoli.apk` ni omborga emas, GitHub **Releases** ga qo'ying
 
+## 🔄 Yangi versiya chiqarish (Google Play'siz)
+
+Bitta buyruq: testlar → APK yig'ish → saytga joylash → GitHub Release.
+
+```bash
+python deploy/release.py 1.0.3 --notes-uz "Yangi dizayn va xatolar tuzatildi"
+```
+
+Ilova ochilganda saytdagi `version.json` ni tekshiradi va yangi versiya bo'lsa yuklab olishni taklif qiladi
+(`--min-build N` bersangiz, eski versiyalar majburan yangilanadi). Saytdagi yuklab olish tugmasi ham avtomatik yangilanadi.
+Imkoniyatlar: `--arm64` (tezroq), `--skip-tests`, `--no-deploy`, `--no-git`, `--dry-run`.
+
 ## 🗂 Tuzilma
 
 ```text

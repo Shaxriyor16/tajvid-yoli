@@ -13,6 +13,7 @@ import 'core/router/router_refresh_stream.dart';
 import 'dart:async';
 import 'core/db/app_database.dart';
 import 'core/services/notification_service.dart';
+import 'core/services/update_service.dart';
 
 class TajvidYoliApp extends StatefulWidget {
   const TajvidYoliApp({super.key});
@@ -35,7 +36,10 @@ class _TajvidYoliAppState extends State<TajvidYoliApp>
     _router = AppRouter.createRouter(authBloc, refresh: _refresh);
     WidgetsBinding.instance.addObserver(this);
     _authSub = authBloc.stream.listen((s) {
-      if (s is AuthAuthenticated) _scheduleSync();
+      if (s is AuthAuthenticated) {
+        _scheduleSync();
+        _scheduleUpdateCheck();
+      }
     });
     _langSub = context
         .read<AppConfigCubit>()
@@ -44,6 +48,14 @@ class _TajvidYoliAppState extends State<TajvidYoliApp>
         .distinct()
         .listen((_) => _scheduleSync());
     _scheduleSync();
+  }
+
+  /// Kirgandan bir necha soniya keyin yangi versiya borligini tekshiradi (bir marta).
+  void _scheduleUpdateCheck() {
+    Future<void>.delayed(const Duration(seconds: 6), () {
+      final ctx = AppRouter.rootNavigatorKey.currentContext;
+      if (mounted && ctx != null) UpdateService.checkAndPrompt(ctx);
+    });
   }
 
   StreamSubscription<AuthState>? _authSub;
