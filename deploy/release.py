@@ -36,8 +36,7 @@ SITE_URL = "https://tajvid-yoli.vercel.app"  # domen olingach `set_domain.py` ya
 
 def run(cmd, cwd=ROOT, check=True):
     print(f"\n$ {' '.join(map(str, cmd))}")
-    if sys.platform == "win32":
-        cmd = [f'"{c}"' if " " in str(c) and not str(c).startswith('"') else str(c) for c in cmd]
+    cmd = [str(c) for c in cmd]  # bo'sh joyli yo'llarni subprocess o'zi to'g'ri qo'shtirnoqlaydi
     return subprocess.run(cmd, cwd=cwd, check=check, shell=(sys.platform == "win32"))
 
 
@@ -191,7 +190,8 @@ def main():
         run(["git", "add", "pubspec.yaml", "website/version.json"])
         run(["git", "commit", "-m", f"Release {tag} (build {build})"])
         run(["git", "tag", tag])
-        run(["git", "push", "origin", "HEAD", "--follow-tags"])
+        run(["git", "push", "origin", "HEAD"])
+        run(["git", "push", "origin", tag])
         notes = a.notes_uz or a.notes_en or f"Tajvid yo'li {a.version}"
         run([tool("gh"), "release", "create", tag, *map(str, dests), "--title", f"Tajvid yo'li {a.version}", "--notes", notes])
 
