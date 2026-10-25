@@ -177,6 +177,7 @@ qo'shib, qoidalarni qayta deploy qiling.
 
 ## ☁️ Joylash
 
+- **Sayt Vercel'da**: `https://tajvid-yoli.vercel.app` (sozlama: `website/vercel.json`). Yangilash: `cd website && vercel deploy --prod`
 - Sayt toza manzillarda ishlaydi, domen **ildizida** joylanishi kerak (`tajvidyoli.uz/`)
 - Admin panelni saytdan **alohida** (`boshqaruv.<domen>`) joylang va server darajasida yoping:
   [`deploy/nginx.example.conf`](deploy/nginx.example.conf), [`admin/README.md`](admin/README.md), [`website/README.md`](website/README.md)
