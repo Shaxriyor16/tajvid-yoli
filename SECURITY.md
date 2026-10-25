@@ -13,7 +13,7 @@ tavsiflaydi. Zaiflik topsangiz, ochiq issue ochmang. Loyiha egasiga shaxsiy xaba
 | **Mulohazalar** | Foydalanuvchi faqat yozadi (o'qiy olmaydi). **Server tomonida tezlik cheklovi**: 60 soniyada bittadan (`feedbackMeta`) |
 | **Kirish (ilova)** | Firebase Auth throttling + qurilmada o'sib boruvchi bloklash (5 xatodan keyin 30 s, 15 daqiqagacha). Parol: 8+ belgi, harf+raqam, keng tarqalgan parollar taqiqlangan. Xatolar hisob mavjudligini oshkor qilmaydi |
 | **Kirish (admin)** | Brauzer darajasida o'sib boruvchi bloklash + umumiy xabarlar. Admin hisobi uchun email tasdiqlash shart emas (UID himoyasi) |
-| **AI** | App Check majburiy, foydalanuvchi boshiga kvota (kuniga 30, daqiqasiga 4), kirish tekshiruvi, hajm cheklovi |
+| **AI** | Ilova Firebase AI Logic ishlatadi (kalit ilovada yo'q); uni App Check bilan **qo'lda majburiy** qiling (pastga qarang). `functions/` dagi `tajvidAi` kodida App Check majburiy, kvota (kuniga 30, daqiqasiga 4), kirish va hajm tekshiruvi bor, lekin hali deploy qilinmagan |
 | **Veb** | CSP, HSTS, `X-Frame-Options`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`. Admin: `noindex`, kesh yo'q |
 | **Android** | HTTPS majburiy, `allowBackup=false`, backup'dan ma'lumot chiqarilmaydi, R8/proguard yoqilgan, faqat bitta `exported` activity |
 
