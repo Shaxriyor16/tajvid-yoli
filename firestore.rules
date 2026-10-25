@@ -22,14 +22,14 @@ service cloud.firestore {
       );
     }
 
-    // Admin panel (admin/ papkasi) barcha foydalanuvchi profillarini O'QIY oladi.
-    // Faqat tasdiqlangan Google emaili shu ro'yxatda bo'lgan hisob.
-    // Yangi admin qo'shish: ro'yxatga kichik harflarda yana bir email qo'shing va qayta deploy qiling.
+    // Admin panel (admin/ papkasi) foydalanuvchi profillari va mulohazalarni O'QIY oladi.
+    // Admin EMAIL bilan emas, hisobning UID raqami bilan aniqlanadi: UID maxfiy, email tasdiqlashni
+    // talab qilmaydi va hech qayerda ochiq yozilmaydi. Hisob faqat Firebase Console'da yaratiladi
+    // (Authentication -> Users -> Add user). Yangi admin: uning UID sini ro'yxatga qo'shing.
     function isAdmin() {
       return request.auth != null
-        && request.auth.token.email_verified == true
-        && request.auth.token.email.lower() in [
-          'crazyshaxgamerpubg2009@gmail.com'
+        && request.auth.uid in [
+          'b4QUKm9lBbS5jccsVeBpFwBInCD2'
         ];
     }
 

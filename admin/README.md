@@ -13,11 +13,11 @@ python -m http.server 8800
 ## Haqiqiy ma'lumotga ulash
 1. **Web ilova yarating** (bepul): Firebase Console → Project settings → Your apps → Add app → **Web**.
    Ko'rsatilgan `apiKey` va `appId` ni `js/config.js` ga yozing (loyiha hozir faqat Android/iOS ilovalarga ega).
-2. Admin emailini **faqat** `firestore.rules` dagi `isAdmin()` ro'yxatiga yozing. Brauzer fayllarida (`js/config.js`) admin emaili saqlanmaydi.
+2. Admin hisobi `firestore.rules` dagi `isAdmin()` ro'yxatiga **UID** bilan yoziladi (Console → Authentication → Users → UID ustuni). Brauzer fayllarida admin ma'lumoti saqlanmaydi.
 3. `../firestore.rules` dagi `admin-emailni-shu-yerga-yozing@example.invalid` ni o'sha Gmail (kichik harflarda) bilan almashtiring va deploy qiling:
    `firebase deploy --only firestore:rules`
 4. Authentication → Settings → **Authorized domains** — `localhost` tayyor; boshqa joyga qo'ysangiz domenni qo'shing.
-5. **Admin hisobini Firebase Console'da yarating:** Authentication → Users → **Add user** (email = `isAdmin()` ro'yxatidagi, parolni o'zingiz tanlang). Panelning o'zida hisob yaratib bo'lmaydi.
+5. **Admin hisobini Firebase Console'da yarating:** Authentication → Users → **Add user** (UID shu hisobniki, parolni o'zingiz tanlang). Panelning o'zida hisob yaratib bo'lmaydi.
 6. `http://localhost:8800` ni oching → email va parol bilan kiring. Console'da yaratilgan hisob "tasdiqlanmagan" bo'ladi: panel tasdiqlash xatini yuborish tugmasini ko'rsatadi; xatdagi havolani bosing.
 
 ### To'liq ro'yxat (ixtiyoriy, Blaze tarifi)

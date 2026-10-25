@@ -675,7 +675,6 @@ function startApp() {
 }
 async function handleUser(u) {
   if (!u) return showGate();
-  if (!u.emailVerified) return showVerify(u);
   // Admin ekanini brauzer emas, Firestore qoidasi hal qiladi: ruxsat bo'lmasa o'qish rad etiladi.
   if (!state.demo) {
     try {

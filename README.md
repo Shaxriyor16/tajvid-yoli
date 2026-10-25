@@ -167,13 +167,13 @@ firebase deploy --only firestore:rules     # Firestore qoidalari
 firebase deploy --only functions           # Blaze tarifi kerak
 ```
 
-Admin emaillari `firestore.rules` dagi `isAdmin()` ro'yxatida. Yangi admin qo'shish: emailni (kichik harflarda) ro'yxatga
-qo'shib, qoidalarni qayta deploy qiling.
+Adminlar `firestore.rules` dagi `isAdmin()` ro'yxatida **UID** bilan aniqlanadi (email ochiq yozilmaydi). Yangi admin:
+Console'da hisob yarating (Authentication → Users → Add user), uning UID sini ro'yxatga qo'shib, qoidalarni qayta deploy qiling.
 
 ### Xavfsizlik
 - Har bir foydalanuvchi faqat **o'z** hujjatini o'qiydi va yozadi, maydonlar qoidalarda qat'iy tekshiriladi
 - Mulohazani istalgan tasdiqlangan foydalanuvchi **yozadi**, lekin faqat admin **o'qiydi**
-- Admin panel sahifasi ochiq bo'lsa ham, ma'lumotni faqat admin emaili ola oladi
+- Admin panel sahifasi ochiq bo'lsa ham, ma'lumotni faqat admin hisobi (UID) ola oladi
 
 ## ☁️ Joylash
 
