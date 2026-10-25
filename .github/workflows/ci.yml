@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  flutter:
+    name: Flutter (analyze + test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.44.8
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter analyze --no-fatal-infos
+      - run: flutter test
+
+  functions:
+    name: Cloud Functions (test)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: functions
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: functions/package-lock.json
+      - run: npm ci
+      - run: npm run check
+      - run: npm test
+
+  web:
+    name: Sayt va admin panel (sintaksis)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: JavaScript sintaksisini tekshirish
+        run: |
+          for f in website/js/main.js website/js/hero3d.js admin/js/*.js; do
+            node --check "$f"
+          done
+      - name: Ichki havolalar mavjudligini tekshirish
+        run: |
+          python3 - <<'EOF'
+          import re, os, sys
+          bad = []
+          for root in ("website",):
+              for dirpath, _, files in os.walk(root):
+                  for f in files:
+                      if not f.endswith(".html"):
+                          continue
+                      s = open(os.path.join(dirpath, f), encoding="utf-8").read()
+                      for m in re.finditer(r'(?:href|src)="(/[^"#?]*)', s):
+                          u = m.group(1)
+                          p = os.path.join(root, u.lstrip("/"))
+                          if u.endswith("/"):
+                              p = os.path.join(p, "index.html")
+                          if u != "/" and not os.path.exists(p) and "downloads/" not in u:
+                              bad.append((dirpath + "/" + f, u))
+          print("Buzilgan havolalar:", bad)
+          sys.exit(1 if bad else 0)
+          EOF
