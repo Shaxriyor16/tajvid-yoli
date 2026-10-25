@@ -1,0 +1,6 @@
+Saytda ishlatilgan shriftlar
+- Chubbo (Bold) — sarlavhalar. Supreme (Regular, Medium, Bold) — matn.
+  Muallif: Indian Type Foundry, Fontshare (https://www.fontshare.com), ITF Free Font License.
+  Shaxsiy va tijorat maqsadida bepul; shriftning o'zini qayta sotish mumkin emas.
+- Amiri — arabcha matn (SIL Open Font License), ilova bilan bir xil.
+Chubbo/Supreme'da U+02BB (ʻ), strelka va belgi glyphlari yo'q; saytda ular ishlatilmaydi.

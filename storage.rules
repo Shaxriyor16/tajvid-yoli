@@ -1,0 +1,32 @@
+rules_version = '2';
+
+// XAVFSIZLIK QOIDALARI: foydalanuvchi faqat o'z papkasiga rasm
+// yuklay oladi; fayl turi va hajmi cheklanadi.
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isVerifiedOwner(uid) {
+      let provider = request.auth == null
+        ? ''
+        : request.auth.token.firebase.sign_in_provider;
+      return request.auth != null && request.auth.uid == uid && (
+        provider == 'google.com'
+        || provider == 'apple.com'
+        || ((provider == 'password' || provider == 'emailLink')
+          && request.auth.token.email_verified == true)
+      );
+    }
+
+    match /users/{uid}/profile.jpg {
+      // SDK orqali kirish faqat egasiga ochiq. Mavjud download tokenlari
+      // alohida bearer havolalar hisoblanadi; ularni ommaviy tarqatmang.
+      allow read: if isVerifiedOwner(uid);
+      allow create, update: if isVerifiedOwner(uid)
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType in ['image/jpeg', 'image/png', 'image/webp'];
+      allow delete: if isVerifiedOwner(uid);
+    }
+
+    // Qolgan barcha yo'llar yopiq (deny).
+  }
+}

@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="uz" data-lang="uz" data-title-uz="Tajvid yo'li — Qur'onni tajvid bilan o'rganing" data-title-en="Tajvid Yo'li — Learn the Qur'an with tajweed">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tajvid yo'li — Qur'onni tajvid bilan o'rganing</title>
+  <meta name="description" content="Tajvid yo'li — Qur'onni tajvid qoidalari bilan to'g'ri o'qishni o'rganish ilovasi: arab alifbosi, harakatlar, 13 ta tajvid qoidasi, 114 sura va AI talaffuz tekshiruvi. O'zbek, arab va ingliz tillarida.">
+  <meta name="theme-color" content="#0f4a3d">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Tajvid yo'li — Qur'onni tajvid bilan o'rganing">
+  <meta property="og:description" content="Arab alifbosidan tajvid qoidalarigacha — bosqichma-bosqich, audio va AI yordamida.">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="preload" href="/fonts/Chubbo-Bold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/Supreme-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/style.css?v=7">
+  <script type="importmap">{"imports":{"three":"./js/vendor/three.module.min.js"}}</script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"MobileApplication","name":"Tajvid yo'li","applicationCategory":"EducationalApplication","operatingSystem":"Android","inLanguage":["uz","ar","en"],"description":"Qur'onni tajvid qoidalari bilan o'rganish ilovasi."}
+  </script>
+</head>
+<body>
+<a class="skip" href="#main">Asosiy qismga o'tish</a>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <a class="brand" href="/" aria-label="Tajvid yo'li">
+      <img src="/assets/logo.png" alt="" width="38" height="38">
+      <span>Tajvid yo'li</span>
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#features"><span lang="uz">Imkoniyatlar</span><span lang="en">Features</span></a></li>
+      <li><a href="#how"><span lang="uz">Qanday ishlaydi</span><span lang="en">How it works</span></a></li>
+      <li><a href="#screens"><span lang="uz">Ekranlar</span><span lang="en">Screens</span></a></li>
+      <li><a href="#faq"><span lang="uz">Savol-javob</span><span lang="en">FAQ</span></a></li>
+      <li><a href="#contact"><span lang="uz">Aloqa</span><span lang="en">Contact</span></a></li>
+    </ul>
+    <div class="nav-tools">
+      <button class="lang-btn" id="lang-btn" type="button" aria-label="Til / Language">EN</button>
+      <button class="icon-btn" id="theme-btn" type="button" aria-label="Mavzu / Theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+      <a class="btn btn-gold btn-sm nav-cta" href="#download"><span lang="uz">Yuklab olish</span><span lang="en">Get the app</span></a>
+      <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Menyu" aria-expanded="false" aria-controls="nav-links">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <!-- HERO -->
+  <section class="hero" style="padding-bottom:clamp(70px,9vw,120px)">
+    <div class="pattern" aria-hidden="true"></div>
+    <div class="wrap hero-grid">
+      <div>
+        <span class="kicker"><i></i><span lang="uz">Tajvid o'rganish ilovasi</span><span lang="en">Tajweed learning app</span></span>
+        <h1>
+          <span lang="uz">Qur'onni <span class="grad">tajvid bilan</span> to'g'ri o'qishni o'rganing</span>
+          <span lang="en">Learn to read the Qur'an <span class="grad">with tajweed</span>, correctly</span>
+        </h1>
+        <p class="lead">
+          <span lang="uz">Arab alifbosidan tajvid qoidalarigacha — bosqichma-bosqich darslar, tilovat audiosi va talaffuzingizni tekshiruvchi sun'iy intellekt bir ilovada. Arab tilini bilmasangiz ham boshlashingiz mumkin.</span>
+          <span lang="en">From the Arabic alphabet to tajweed rules — step-by-step lessons, recitation audio and an AI that checks your pronunciation, all in one app. No Arabic needed to start.</span>
+        </p>
+        <div class="cta-row" id="download">
+          <button type="button" class="btn btn-gold" data-open="notify" aria-describedby="soon-note">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg>
+            <span lang="uz">Chiqqanda xabar bering</span><span lang="en">Notify me at launch</span>
+          </button>
+          <a class="btn btn-gold" id="apk-btn" href="/downloads/tajvid-yoli.apk" download hidden>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg>
+            <span lang="uz">Android uchun yuklab olish (APK)</span><span lang="en">Download for Android (APK)</span>
+          </a>
+          <a class="btn btn-ghost" href="#features"><span lang="uz">Imkoniyatlarni ko'rish</span><span lang="en">See features</span></a>
+        </div>
+        <p id="soon-note" style="margin:14px 0 0;color:var(--text-low);font-size:14px">
+          <span lang="uz">Ilova ommaviy chiqarishga tayyorlanmoqda.</span>
+          <span lang="en">The app is being prepared for public release.</span>
+        </p>
+        <ul class="chips">
+          <li>O'zbek · English · <span class="arabic" style="font-size:16px">العربية</span></li>
+          <li><span lang="uz">Yorug' va qorong'i mavzu</span><span lang="en">Light &amp; dark theme</span></li>
+          <li><span lang="uz">Darslar offline ham ishlaydi</span><span lang="en">Lessons work offline</span></li>
+        </ul>
+      </div>
+
+      <div class="phones" id="hero-stage" data-screens="assets/screens/home.webp,assets/screens/alphabet.webp">
+        <figure class="phone p1" data-tone="desert" style="margin:0">
+          <div class="screen"><img src="/assets/screens/home.webp" alt="Tajvid yo'li bosh ekrani" width="660" height="1434" fetchpriority="high"></div>
+        </figure>
+        <figure class="phone p2" data-tone="natural" style="margin:0">
+          <div class="screen"><img src="/assets/screens/alphabet.webp" alt="Arab alifbosi ekrani" width="660" height="1434" loading="lazy"></div>
+        </figure>
+        <div class="float-ar arabic" aria-hidden="true">بِسْمِ اللَّهِ</div>
+        <div class="float-badge" aria-hidden="true"><b><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></b><span lang="uz">AI talaffuz tekshiruvi</span><span lang="en">AI pronunciation check</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RAQAMLAR -->
+  <section class="stats" aria-label="Qisqacha">
+    <div class="wrap">
+      <div class="stats-grid">
+        <div class="stat"><b>28</b><span lang="uz">arab harfi</span><span lang="en">Arabic letters</span></div>
+        <div class="stat"><b>13</b><span lang="uz">tajvid qoidasi</span><span lang="en">tajweed rules</span></div>
+        <div class="stat"><b>114</b><span lang="uz">sura</span><span lang="en">surahs</span></div>
+        <div class="stat"><b>3</b><span lang="uz">til</span><span lang="en">languages</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMKONIYATLAR -->
+  <section id="features">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow"><span lang="uz">Imkoniyatlar</span><span lang="en">Features</span></span>
+        <h2><span lang="uz">To'g'ri o'qish uchun kerak bo'lgan hamma narsa</span><span lang="en">Everything you need to read correctly</span></h2>
+        <p><span lang="uz">Harfdan boshlab Qur'on sahifasigacha — izchil yo'l, aniq maqsadlar.</span><span lang="en">From the first letter to the Qur'an page — a clear path with clear goals.</span></p>
+      </div>
+      <div class="cards">
+        <article class="card reveal" style="--c:#1e9e7f">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l5-14 5 14M6.2 15h5.6M16 20v-9m0 0a3 3 0 1 1 3 3"/></svg></div>
+          <h3><span lang="uz">Harflar va harakatlar</span><span lang="en">Letters &amp; vowel marks</span></h3>
+          <p><span lang="uz">28 ta harf, ularning shakllari va ulanishi, fatha-kasra-zamma va so'zlarni o'qish mashqlari.</span><span lang="en">28 letters, their forms and connections, fatha-kasra-damma and word-reading practice.</span></p>
+        </article>
+        <article class="card reveal" style="--c:#7b63c7">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg></div>
+          <h3><span lang="uz">Tajvid kursi</span><span lang="en">Tajweed course</span></h3>
+          <p><span lang="uz">Nun saakinah, mim saakinah, madd va boshqa 13 ta qoida — arabcha misollar va oddiy izohlar bilan.</span><span lang="en">Noon saakinah, meem saakinah, madd and more — 13 rules with Arabic examples and plain explanations.</span></p>
+        </article>
+        <article class="card reveal" style="--c:#c9962f">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5.5A2.5 2.5 0 0 1 4.5 3H11v17H4.5A2.5 2.5 0 0 0 2 22.5zM22 5.5A2.5 2.5 0 0 0 19.5 3H13v17h6.5a2.5 2.5 0 0 1 2.5 2.5z"/></svg></div>
+          <h3><span lang="uz">Qur'on o'qish</span><span lang="en">Read the Qur'an</span></h3>
+          <p><span lang="uz">114 sura, usmoniy matn, qori tilovati audiosi, lotincha o'qilishi va tarjima. Kitob rejimida mushaf sahifalari kabi o'qing.</span><span lang="en">114 surahs in Uthmani script with reciter audio, Latin transliteration and translation. Book mode reads like mushaf pages.</span></p>
+        </article>
+        <article class="card reveal" style="--c:#3b82c4">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></div>
+          <h3><span lang="uz">AI talaffuz tekshiruvi</span><span lang="en">AI pronunciation check</span></h3>
+          <p><span lang="uz">Iborani o'qing — sun'iy intellekt eshitganini yozib, taxminiy baho va tavsiya beradi.</span><span lang="en">Recite a phrase — the AI shows what it heard and gives an approximate score with feedback.</span></p>
+        </article>
+        <article class="card reveal" style="--c:#c4577a">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h2m3-5v10m3-13v16m3-12v8m3-5h2"/></svg></div>
+          <h3><span lang="uz">Ovozdan sura topish</span><span lang="en">Find a surah by voice</span></h3>
+          <p><span lang="uz">Qaysi sura o'qilayotganini bilmaysizmi? Tilovatni yozing — ilova sura va oyatni aniqlab, matnini ko'rsatadi.</span><span lang="en">Not sure which surah it is? Record the recitation — the app identifies the surah and ayah and shows the text.</span></p>
+        </article>
+        <article class="card reveal" style="--c:#d9772b">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4m8-4v4M3 10h18m-11 4h4m-4 3h2"/></svg></div>
+          <h3><span lang="uz">Kunlik reja va yutuqlar</span><span lang="en">Daily plan &amp; progress</span></h3>
+          <p><span lang="uz">Har kun 4 ta kichik vazifa, streak, XP maqsadi, testlar va yutuq sertifikati — izchillikni saqlab turadi.</span><span lang="en">Four small tasks a day, streaks, XP goals, quizzes and an achievement certificate keep you consistent.</span></p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- QANDAY ISHLAYDI -->
+  <section id="how" class="alt">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow"><span lang="uz">Qanday ishlaydi</span><span lang="en">How it works</span></span>
+        <h2><span lang="uz">Uch qadamda o'rganing</span><span lang="en">Learn in three steps</span></h2>
+      </div>
+      <div class="steps">
+        <div class="step reveal">
+          <h3><span lang="uz">Harflardan boshlang</span><span lang="en">Start with the letters</span></h3>
+          <p><span lang="uz">Alifbo, harakatlar va so'zlarni o'qish — mashq va qisqa testlar bilan mustahkamlanadi.</span><span lang="en">Alphabet, vowel marks and word reading — reinforced with exercises and short quizzes.</span></p>
+        </div>
+        <div class="step reveal">
+          <h3><span lang="uz">Qoidalarni o'rganing</span><span lang="en">Learn the rules</span></h3>
+          <p><span lang="uz">Tajvid qoidalarini misollar bilan tushuning. O'qilgan har bir qoida dars sifatida hisoblanadi.</span><span lang="en">Understand each tajweed rule with examples. Every rule you read counts as a lesson.</span></p>
+        </div>
+        <div class="step reveal">
+          <h3><span lang="uz">O'qing va tekshiring</span><span lang="en">Read and check</span></h3>
+          <p><span lang="uz">Suralarni o'qing, tilovatni tinglang va talaffuzingizni AI bilan sinab ko'ring.</span><span lang="en">Read surahs, listen to the recitation and test your pronunciation with the AI.</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EKRANLAR -->
+  <section id="screens">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow"><span lang="uz">Ekranlar</span><span lang="en">Screens</span></span>
+        <h2><span lang="uz">Sokin, aniq va chiroyli</span><span lang="en">Calm, clear and beautiful</span></h2>
+        <p><span lang="uz">Chapga suring — ilovaning asosiy ekranlari.</span><span lang="en">Swipe sideways to see the main screens.</span></p>
+      </div>
+    </div>
+    <div class="wrap">
+      <div class="gallery" tabindex="0" aria-label="Ilova ekranlari / App screens">
+        <figure class="shot"><div class="phone" data-tone="desert"><div class="screen"><img src="/assets/screens/home.webp" alt="Bosh ekran" width="660" height="1434" loading="lazy"></div></div><figcaption><span lang="uz">Bosh ekran</span><span lang="en">Home</span><small><span lang="uz">Maqsad va bo'limlar</span><span lang="en">Goals and sections</span></small></figcaption></figure>
+        <figure class="shot"><div class="phone" data-tone="natural"><div class="screen"><img src="/assets/screens/alphabet.webp" alt="Arab alifbosi" width="660" height="1434" loading="lazy"></div></div><figcaption><span lang="uz">Arab alifbosi</span><span lang="en">Arabic alphabet</span><small><span lang="uz">28 harf</span><span lang="en">28 letters</span></small></figcaption></figure>
+        <figure class="shot"><div class="phone" data-tone="desert"><div class="screen"><img src="/assets/screens/tajwid.webp" alt="Tajvid qoidalari" width="660" height="1434" loading="lazy"></div></div><figcaption><span lang="uz">Tajvid kursi</span><span lang="en">Tajweed course</span><small><span lang="uz">13 ta qoida</span><span lang="en">13 rules</span></small></figcaption></figure>
+        <figure class="shot"><div class="phone" data-tone="black"><div class="screen"><img src="/assets/screens/quiz.webp" alt="Alifbo testi" width="660" height="1434" loading="lazy"></div></div><figcaption><span lang="uz">Bilimni sinash</span><span lang="en">Quiz</span><small><span lang="uz">Harf testi</span><span lang="en">Letter quiz</span></small></figcaption></figure>
+        <figure class="shot"><div class="phone" data-tone="natural"><div class="screen"><img src="/assets/screens/harakat.webp" alt="Harakatlar" width="660" height="1434" loading="lazy"></div></div><figcaption><span lang="uz">Harakatlar</span><span lang="en">Vowel marks</span><small>Fatha · Kasra · Zamma</small></figcaption></figure>
+        <figure class="shot"><div class="phone" data-tone="natural"><div class="screen"><img src="/assets/screens/ai-check.webp" alt="AI talaffuz tekshiruvi" width="660" height="1434" loading="lazy"></div></div><figcaption><span lang="uz">AI tekshiruv</span><span lang="en">AI check</span><small><span lang="uz">Talaffuz mashqi</span><span lang="en">Pronunciation practice</span></small></figcaption></figure>
+        <figure class="shot"><div class="phone" data-tone="desert"><div class="screen"><img src="/assets/screens/daily-plan.webp" alt="Kunlik reja" width="660" height="1434" loading="lazy"></div></div><figcaption><span lang="uz">Kunlik reja</span><span lang="en">Daily plan</span><small><span lang="uz">4 ta vazifa</span><span lang="en">4 tasks</span></small></figcaption></figure>
+        <figure class="shot"><div class="phone" data-tone="black"><div class="screen dark"><img src="/assets/screens/home-dark.webp" alt="Qorong'i mavzu" width="660" height="1434" loading="lazy"></div></div><figcaption><span lang="uz">Qorong'i mavzu</span><span lang="en">Dark theme</span><small><span lang="uz">Ko'zni charchatmaydi</span><span lang="en">Easy on the eyes</span></small></figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI HALOL -->
+  <section class="alt">
+    <div class="wrap">
+      <div class="ai reveal">
+        <div>
+          <span class="eyebrow" style="font-size:12.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-soft)"><span lang="uz">Sun'iy intellekt haqida ochiq gapiramiz</span><span lang="en">Honest about AI</span></span>
+          <h2><span lang="uz">AI — yordamchi, ustoz emas</span><span lang="en">AI is a helper, not a teacher</span></h2>
+          <p><span lang="uz">Talaffuz bahosi AI eshitgan so'zlarni solishtirishga asoslangan. Maxraj va tajvidni ovozdan to'liq baholay olmaydi.</span><span lang="en">The pronunciation score compares the words the AI recognised. It cannot fully judge articulation points (makhraj) or tajweed from audio.</span></p>
+          <ul>
+            <li><span lang="uz">Baho taxminiy — chuqur tekshiruv uchun malakali ustozga murojaat qiling.</span><span lang="en">The score is approximate — see a qualified teacher for in-depth checking.</span></li>
+            <li><span lang="uz">Ovoz faqat siz mashqni boshlaganingizda tahlil uchun Google Gemini xizmatiga yuboriladi.</span><span lang="en">Audio is sent to Google Gemini for analysis only when you start an exercise.</span></li>
+            <li><span lang="uz">Vaqtinchalik audio fayl tahlildan so'ng qurilmangizdan o'chiriladi.</span><span lang="en">The temporary audio file is deleted from your device after analysis.</span></li>
+            <li><span lang="uz">Yutuq sertifikati faqat ilova ichidagi rag'bat — rasmiy ijozat emas.</span><span lang="en">The achievement certificate is in-app motivation only — not an official ijazah.</span></li>
+          </ul>
+        </div>
+        <div class="ai-demo" aria-hidden="true">
+          <div class="note" style="margin:0 0 6px"><span lang="uz">O'QILISHI KERAK</span><span lang="en">TO RECITE</span></div>
+          <div class="ar-big arabic" lang="ar" dir="rtl" style="display:block !important">بِسْمِ اللَّهِ</div>
+          <div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></div>
+          <div class="note"><span lang="uz">Tugmani bosing va o'qing</span><span lang="en">Tap and recite</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAXFIYLIK -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow"><span lang="uz">Maxfiylik</span><span lang="en">Privacy</span></span>
+        <h2><span lang="uz">Ma'lumotingiz sizning qo'lingizda</span><span lang="en">Your data stays in your hands</span></h2>
+      </div>
+      <div class="trust">
+        <div class="card reveal" style="--c:#1e9e7f">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2m-9 0l1 14h8l1-14M10 11v5m4-5v5"/></svg></div>
+          <h3><span lang="uz">Hisobni o'zingiz o'chirasiz</span><span lang="en">Delete your account yourself</span></h3>
+          <p><span lang="uz">Sozlamalar › Hisobni o'chirish. Hisob, profil va rasm serverlardan o'chadi. <a href="/delete-account/">Batafsil</a></span><span lang="en">Settings › Delete account. Your account, profile and photo are removed from our servers. <a href="/delete-account/?lang=en">Details</a></span></p>
+        </div>
+        <div class="card reveal" style="--c:#3b82c4">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M11 18h2"/></svg></div>
+          <h3><span lang="uz">Natijalar qurilmada</span><span lang="en">Progress on your device</span></h3>
+          <p><span lang="uz">Dars natijalari, xatcho'plar va yuklangan suralar qurilmangizda saqlanadi.</span><span lang="en">Lesson results, bookmarks and downloaded surahs are stored on your device.</span></p>
+        </div>
+        <div class="card reveal" style="--c:#c9962f">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+          <h3><span lang="uz">Reklamasiz</span><span lang="en">No ads</span></h3>
+          <p><span lang="uz">Hozirgi versiyada reklama ko'rsatilmaydi. To'liq ma'lumot: <a href="/privacy/">Maxfiylik siyosati</a>.</span><span lang="en">The current version shows no ads. Full details: <a href="/privacy/?lang=en">Privacy Policy</a>.</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="alt">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow"><span lang="uz">Savol-javob</span><span lang="en">FAQ</span></span>
+        <h2><span lang="uz">Ko'p so'raladigan savollar</span><span lang="en">Frequently asked questions</span></h2>
+      </div>
+      <div class="faq">
+        <details><summary><span lang="uz">Tajvid yo'li nima?</span><span lang="en">What is Tajvid Yo'li?</span></summary><p><span lang="uz">Qur'onni to'g'ri va tajvid qoidalari bilan o'qishni o'rganish uchun mo'ljallangan ta'lim ilovasi: alifbo, harakatlar, tajvid kursi, suralar va AI mashqlari.</span><span lang="en">A learning app for reading the Qur'an correctly and with tajweed: alphabet, vowel marks, a tajweed course, surahs and AI practice.</span></p></details>
+        <details><summary><span lang="uz">AI orqali tekshirish qanday ishlaydi?</span><span lang="en">How does AI checking work?</span></summary><p><span lang="uz">Iborani o'qiysiz, ilova ovozni tahlil uchun Google Gemini xizmatiga yuboradi va eshitilgan so'zlarni solishtirib, taxminiy baho va tavsiya ko'rsatadi. Bu ustoz tekshiruvining o'rnini bosmaydi.</span><span lang="en">You recite a phrase, the app sends the audio to Google Gemini for analysis and shows an approximate score and feedback based on the recognised words. It does not replace a teacher.</span></p></details>
+        <details><summary><span lang="uz">Internet bo'lmasa ham ishlaydimi?</span><span lang="en">Does it work offline?</span></summary><p><span lang="uz">Ha, darslar va mashqlarning ko'pi offline ishlaydi. Ba'zi materiallarni birinchi marta yuklash uchun, shuningdek AI va tilovat audiosi uchun internet kerak.</span><span lang="en">Yes, most lessons and exercises work offline. Internet is needed to download some materials the first time, and for AI features and recitation audio.</span></p></details>
+        <details><summary><span lang="uz">Sertifikat qanday olinadi?</span><span lang="en">How do I get a certificate?</span></summary><p><span lang="uz">Kamida bitta darsni muvaffaqiyatli yakunlagach, ilova ichida yutuq sertifikati paydo bo'ladi. U motivatsion xarakterda va rasmiy ijozat yoki diniy sertifikat emas.</span><span lang="en">After successfully finishing at least one lesson, an achievement certificate appears in the app. It is for motivation only and is not an official ijazah or religious certificate.</span></p></details>
+        <details><summary><span lang="uz">Ma'lumotlarim xavfsizmi? Hisobni o'chirsam nima bo'ladi?</span><span lang="en">Is my data safe? What happens if I delete my account?</span></summary><p><span lang="uz">Hisob ma'lumotlari Google Firebase'da saqlanadi va faqat o'zingiz o'qiy olasiz. Hisobni ilovaning o'zidan o'chirsangiz, hisob, profil va profil rasmi serverlardan o'chiriladi. <a href="/privacy/">Maxfiylik siyosatini</a> o'qing.</span><span lang="en">Account data is stored in Google Firebase and only you can read it. If you delete your account in the app, your account, profile and profile photo are removed from our servers. Read the <a href="/privacy/?lang=en">Privacy Policy</a>.</span></p></details>
+        <details><summary><span lang="uz">Qaysi qurilmalarda ishlaydi?</span><span lang="en">Which devices are supported?</span></summary><p><span lang="uz">Hozir Android uchun tayyorlangan. Boshqa platformalar haqida yangiliklarni shu sahifada e'lon qilamiz.</span><span lang="en">It is currently built for Android. We will announce other platforms on this page.</span></p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ALOQA -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="cta reveal">
+        <h2><span lang="uz">Savolingiz yoki taklifingiz bormi?</span><span lang="en">Questions or suggestions?</span></h2>
+        <p><span lang="uz">Ilova chiqishi, xatolar haqida xabar berish yoki fikr bildirish uchun bizga yozing — har bir xatni o'qiymiz.</span><span lang="en">Write to us about the launch, to report a problem or to share feedback — we read every message.</span></p>
+        <div class="cta-row">
+          <a class="btn btn-gold" href="mailto:support@tajvidyoli.uz">support@tajvidyoli.uz</a>
+          <a class="btn btn-ghost" href="https://t.me/m24_shaxa" target="_blank" rel="noopener noreferrer">Telegram · @m24_shaxa</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="brand" href="/"><img src="/assets/logo.png" alt="" width="38" height="38"><span>Tajvid yo'li</span></a>
+        <p><span lang="uz">Qur'onni tajvid bilan to'g'ri o'qishni o'rganish ilovasi.</span><span lang="en">An app for learning to read the Qur'an correctly with tajweed.</span></p>
+      </div>
+      <ul class="foot-links">
+        <li><a href="/privacy/"><span lang="uz">Maxfiylik siyosati</span><span lang="en">Privacy Policy</span></a></li>
+        <li><a href="/terms/"><span lang="uz">Foydalanish shartlari</span><span lang="en">Terms of Use</span></a></li>
+        <li><a href="/delete-account/"><span lang="uz">Hisobni o'chirish</span><span lang="en">Delete account</span></a></li>
+        <li><a href="mailto:support@tajvidyoli.uz"><span lang="uz">Yordam</span><span lang="en">Support</span></a></li>
+      </ul>
+    </div>
+    <div class="copy">© <span id="year">2026</span> Tajvid yo'li. <span lang="uz">Barcha huquqlar himoyalangan.</span><span lang="en">All rights reserved.</span></div>
+  </div>
+</footer>
+
+<dialog id="notify" class="modal" aria-labelledby="notify-title">
+  <form id="notify-form" method="post" action="https://formsubmit.co/support@tajvidyoli.uz"
+        data-endpoint="https://formsubmit.co/ajax/support@tajvidyoli.uz" novalidate>
+    <button type="button" class="modal-x" data-close aria-label="Yopish / Close">&times;</button>
+    <h2 id="notify-title"><span lang="uz">Chiqqanda xabar beramiz</span><span lang="en">We'll let you know at launch</span></h2>
+    <p class="modal-lead"><span lang="uz">Emailingizni qoldiring — ilova chiqqan kuni sizga bitta xabar yuboramiz. Boshqa maqsadda ishlatmaymiz.</span><span lang="en">Leave your email — we'll send you a single message when the app is released. We won't use it for anything else.</span></p>
+    <label for="nf-email"><span lang="uz">Elektron pochta</span><span lang="en">Email address</span></label>
+    <input id="nf-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="ism@pochta.uz" required maxlength="254">
+    <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <input type="hidden" name="_subject" value="Tajvid yo'li: chiqqanda xabar berish so'rovi">
+    <input type="hidden" name="_template" value="table">
+    <input type="hidden" name="_captcha" value="false">
+    <label class="check"><input type="checkbox" name="consent" value="ha" required>
+      <span><span lang="uz">Emailim faqat chiqish haqida xabar berish uchun ishlatilishiga roziman. <a href="/privacy/#s10" target="_blank" rel="noopener noreferrer">Maxfiylik siyosati</a></span><span lang="en">I agree my email is used only to notify me about the release. <a href="/privacy/?lang=en#s10" target="_blank" rel="noopener noreferrer">Privacy Policy</a></span></span></label>
+    <p class="form-msg" id="nf-msg" role="status" aria-live="polite"></p>
+    <button class="btn btn-gold" id="nf-submit" type="submit"><span lang="uz">Yuborish</span><span lang="en">Send</span></button>
+  </form>
+</dialog>
+<script src="/js/main.js?v=7"></script>
+<script type="module" src="/js/hero3d.js?v=4"></script>
+</body>
+</html>

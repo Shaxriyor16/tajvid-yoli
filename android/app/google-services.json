@@ -1,0 +1,71 @@
+{
+  "project_info": {
+    "project_number": "942217335877",
+    "firebase_url": "https://tajvi-yo-li-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "tajvi-yo-li",
+    "storage_bucket": "tajvi-yo-li.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:942217335877:android:4ff54aacaefe1c44f4ff2c",
+        "android_client_info": {
+          "package_name": "com.tajvid_yoli"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "942217335877-81eps0jvg16evt0mb48n8m6esd6hp8m4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tajvid_yoli",
+            "certificate_hash": "197f2de75f393d51bdcf517a95447472816fd965"
+          }
+        },
+        {
+          "client_id": "942217335877-ssf15rfejnaq9c03q9kil42nu8dabmrj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tajvid_yoli",
+            "certificate_hash": "2b7d776c37d9924681d93d14bdac6e33432aa124"
+          }
+        },
+        {
+          "client_id": "942217335877-va6485n1omkbhohtpc0a9l8k3ill570l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tajvid_yoli",
+            "certificate_hash": "fb90a833da401efe9f4822a2bf7ca6293de82d46"
+          }
+        },
+        {
+          "client_id": "942217335877-hlqu4jh3876b6nuiuqslnhhjmfh3ucqa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAq7UhNzcX_E5c3PH92twkI-g5cYxfR3sQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "942217335877-hlqu4jh3876b6nuiuqslnhhjmfh3ucqa.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "942217335877-6imtfqoftnv6u11r4rfb8n9nhu3vk10e.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tajvidyoli.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

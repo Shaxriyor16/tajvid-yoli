@@ -1,0 +1,5 @@
+# Netlify / Cloudflare Pages: eski .html manzillar toza manzilga yo'naltiriladi
+/index.html           /                  301
+/privacy.html         /privacy/          301
+/terms.html           /terms/            301
+/delete-account.html  /delete-account/   301

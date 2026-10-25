@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "tajvid_yoli",
+            "request": "launch",
+            "type": "dart",
+            "toolArgs": ["--dart-define-from-file=app_check_android_config.json"]
+        },
+        {
+            "name": "tajvid_yoli (release)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "tajvid_yoli (iOS debug)",
+            "request": "launch",
+            "type": "dart",
+            "toolArgs": ["--dart-define-from-file=app_check_ios_config.json"]
+        }
+    ]
+}

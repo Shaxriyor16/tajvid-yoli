@@ -1,0 +1,12 @@
+{
+  "name": "tajvid-backend",
+  "private": true,
+  "main": "index.js",
+  "engines": { "node": "22" },
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check index.js && node --check groq_provider.js && node --check groq_smoke.js",
+    "smoke:groq": "node groq_smoke.js"
+  },
+  "dependencies": { "firebase-admin": "^13.0.0", "firebase-functions": "^6.0.0" }
+}

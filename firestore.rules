@@ -1,0 +1,103 @@
+rules_version = '2';
+
+// XAVFSIZLIK QOIDALARI: har bir foydalanuvchi faqat O'Z hujjatini
+// o'qiy va yozadi. Hujjat maydonlari qat'iy validatsiya qilinadi,
+// shunda mijoz orqali zararli ma'lumot yozib bo'lmaydi.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    function isVerifiedOwner(uid) {
+      let provider = request.auth == null
+        ? ''
+        : request.auth.token.firebase.sign_in_provider;
+      return isOwner(uid) && (
+        provider == 'google.com'
+        || provider == 'apple.com'
+        || ((provider == 'password' || provider == 'emailLink')
+          && request.auth.token.email_verified == true)
+      );
+    }
+
+    // Admin panel (admin/ papkasi) barcha foydalanuvchi profillarini O'QIY oladi.
+    // Faqat tasdiqlangan Google emaili shu ro'yxatda bo'lgan hisob.
+    // Yangi admin qo'shish: ro'yxatga kichik harflarda yana bir email qo'shing va qayta deploy qiling.
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email.lower() in [
+          'crazyshaxgamerpubg2009@gmail.com'
+        ];
+    }
+
+    function isValidUserDoc(uid) {
+      let data = request.resource.data;
+      return data.keys().hasOnly([
+        'uid', 'email', 'firstName', 'lastName',
+        'age', 'photoUrl', 'provider', 'createdAt'
+      ])
+        && data.uid == uid
+        && data.email is string
+        && data.email.size() <= 320
+        && data.firstName is string
+        && data.firstName.size() <= 100
+        && data.lastName is string
+        && data.lastName.size() <= 100
+        && data.provider is string
+        && data.provider in ['google', 'apple', 'email']
+        && data.createdAt is string
+        && data.createdAt.size() <= 40
+        && (!('age' in data) || data.age == null
+            || (data.age is int && data.age >= 0 && data.age <= 120))
+        && (!('photoUrl' in data) || data.photoUrl == null
+            || (data.photoUrl is string
+                && data.photoUrl.size() <= 2048
+                && data.photoUrl.matches('^https://.+')));
+    }
+
+    match /users/{uid} {
+      allow read: if isVerifiedOwner(uid) || isAdmin();
+      allow create: if isVerifiedOwner(uid) && isValidUserDoc(uid);
+      allow update: if isVerifiedOwner(uid) && isValidUserDoc(uid)
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.provider == resource.data.provider;
+      allow delete: if false;
+    }
+
+    // Foydalanuvchi mulohazalari: istalgan tasdiqlangan foydalanuvchi FAQAT O'Z
+    // nomidan yarata oladi (o'qiy olmaydi). O'qish va holatni o'zgartirish — admin.
+    function isValidFeedback() {
+      let d = request.resource.data;
+      return d.keys().hasOnly([
+        'uid', 'name', 'email', 'rating', 'category', 'message',
+        'appVersion', 'platform', 'locale', 'status', 'createdAt'
+      ])
+        && d.keys().hasAll(['uid', 'rating', 'category', 'message', 'status', 'createdAt'])
+        && d.rating is int && d.rating >= 1 && d.rating <= 5
+        && d.category in ['idea', 'bug', 'praise', 'other']
+        && d.message is string && d.message.size() >= 1 && d.message.size() <= 1000
+        && (!('name' in d) || (d.name is string && d.name.size() <= 100))
+        && (!('email' in d) || (d.email is string && d.email.size() <= 320))
+        && (!('appVersion' in d) || (d.appVersion is string && d.appVersion.size() <= 40))
+        && (!('platform' in d) || d.platform in ['android', 'ios', 'other'])
+        && (!('locale' in d) || d.locale in ['uz', 'en', 'ar'])
+        && d.status == 'new'
+        && d.createdAt == request.time;
+    }
+
+    match /feedback/{id} {
+      allow create: if isVerifiedOwner(request.resource.data.uid) && isValidFeedback();
+      allow read: if isAdmin();
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+        && request.resource.data.status in ['new', 'read', 'done'];
+      allow delete: if isAdmin();
+    }
+
+    // Qolgan barcha kolleksiyalar standart bo'yicha yopiq (deny).
+  }
+}

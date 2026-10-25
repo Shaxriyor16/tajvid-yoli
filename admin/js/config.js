@@ -1,0 +1,27 @@
+// Admin panel sozlamalari.
+//
+// 1) Firebase Console → Project settings → Your apps → "Add app" → Web (</>)
+//    Ro'yxatdan o'tkazgach chiqadigan `firebaseConfig` dagi apiKey va appId ni quyiga qo'ying.
+//    (Bu qiymatlar maxfiy emas — web ilovalarda ochiq bo'ladi. Himoya Firestore qoidalari bilan.)
+// 2) adminEmails ga o'zingizning Google (Gmail) manzilingizni yozing.
+//    MUHIM: bu faqat tugmalarni yashirish uchun. Haqiqiy himoya `firestore.rules` dagi
+//    isAdmin() ro'yxati — o'sha yerga ham xuddi shu manzilni yozing.
+export const CONFIG = {
+  firebase: {
+    apiKey: "AIzaSyDpaQ7s2KkagA-eF_U14sWhHuowpwFHxFo", // Default Web App
+    authDomain: "tajvi-yo-li.firebaseapp.com",
+    projectId: "tajvi-yo-li",
+    storageBucket: "tajvi-yo-li.firebasestorage.app",
+    messagingSenderId: "942217335877",
+    appId: "1:942217335877:web:0a090570efb8ce3ff4ff2c",
+  },
+  adminEmails: [
+    "crazyshaxgamerpubg2009@gmail.com",
+  ],
+  // "firestore": users/{uid} hujjatlaridan o'qiydi (bepul, Spark tarifida ishlaydi).
+  //   Faqat profilini to'ldirgan foydalanuvchilarni ko'rsatadi.
+  // "functions": Firebase Auth'dagi HAMMA foydalanuvchilarni (tasdiqlanmaganlarni ham,
+  //   oxirgi kirishni ham) ko'rsatadi. Cloud Functions (Blaze tarifi) kerak: `adminListUsers`.
+  source: "firestore",
+  firestoreLimit: 5000,
+};

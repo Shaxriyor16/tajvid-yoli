@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 11 (API 30) va undan eski qurilmalar uchun:
+     foydalanuvchi ma'lumotlari bulut backup'iga chiqarilmaydi. -->
+<full-backup-content>
+    <exclude domain="sharedpref" path="." />
+    <exclude domain="database" path="." />
+    <exclude domain="file" path="." />
+</full-backup-content>

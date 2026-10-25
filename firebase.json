@@ -1,0 +1,21 @@
+{
+  "functions": [{ "source": "functions", "codebase": "tajvid", "runtime": "nodejs22" }],
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "storage": {
+    "rules": "storage.rules"
+  },
+  "auth": {
+    "providers": {
+      "emailPassword": true,
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "Tajvid Yo'li",
+        "supportEmail": "support@tajvidyoli.com",
+        "authorizedRedirectUris": [
+          "https://tajvi-yo-li.firebaseapp.com/__/auth/handler"
+        ]
+      }
+    }
+  }
+}
